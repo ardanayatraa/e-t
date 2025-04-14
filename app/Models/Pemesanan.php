@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Pemesanan extends Model
+{
+    protected $primaryKey = 'pamesanan_id';
+    protected $fillable = ['pemesan_id', 'paketwisata_id', 'tipemobil_id', 'jam_mulai', 'tanggal_keberangkatan'];
+
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'pemesan_id', 'pelanggan_id');
+    }
+
+    public function paketWisata()
+    {
+        return $this->belongsTo(PaketWisata::class, 'paketwisata_id', 'paketwisata_id');
+    }
+
+    public function mobil()
+    {
+        return $this->belongsTo(Mobil::class, 'tipemobil_id', 'tipemobil_id');
+    }
+}
