@@ -35,7 +35,7 @@ Route::middleware([
 
         Route::resource('admin',         AdminController::class);
         Route::resource('paket-wisata', PaketWisataController::class)
-        ->parameters(['paket-wisata' => 'paket-wisata']);
+        ->parameters(['paket-wisata' => 'paketwisata']);
         Route::resource('pelanggan',     PelangganController::class);
         Route::resource('sopir',         SopirController::class);
         Route::resource('mobil',         MobilController::class);
