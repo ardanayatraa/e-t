@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $primaryKey = 'transaksi_id';
-    protected $fillable = ['peketwisata_id', 'pemesan_id', 'pemesanan_id', 'jenis_transakasi', 'jumlah_peserta', 'owe_to_me', 'pay_to_provider', 'total_transaksai', 'transaksi_status'];
+    protected $fillable = ['paketwisata_id', 'pemesan_id', 'pemesanan_id', 'jenis_transaksi', 'jumlah_peserta', 'owe_to_me', 'pay_to_provider', 'total_transaksi', 'transaksi_status'];
 
     public function paketWisata()
     {

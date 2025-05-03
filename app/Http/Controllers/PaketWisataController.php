@@ -104,9 +104,7 @@ class PaketWisataController extends Controller
                             ->limit(3)
                             ->get();
 
-        $mobil= Mobil::whereIn('tipemobil_id', function ($query) {
-            $query->select('mobil_id')->from('ketersediaans');
-        })->get();
+        $mobil= Mobil::all();
 
         return view('paket-wisata.landing-page', compact('paket', 'mobil'));
     }

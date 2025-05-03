@@ -49,9 +49,10 @@ Route::middleware([
 
 
 Route::get('/', [PaketWisataController::class, 'list'])->name('paket-wisata.landing');
+Route::get('/paket', [PaketWisataController::class, 'paket'])->name('paket-wisata.paket');
 Route::get('/paket/{paketwisata}', [PaketWisataController::class, 'show'])->name('paket-wisata.show');
 Route::get('/booking/create', [PemesananController::class, 'create'])->name('booking.create');
-Route::post('/booking', [PemesananController::class, 'store'])->name('booking.store');
+Route::post('/booking', [PemesananController::class, 'store'])->name('pemesanan.store');
 
     Route::get('/transaksi/{transaksi}/ticket', [TransaksiController::class, 'ticket'])
          ->name('transaksi.ticket');

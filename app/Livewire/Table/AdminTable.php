@@ -26,6 +26,14 @@ class AdminTable extends DataTableComponent
                 ->sortable(),
             Column::make("Created at", "created_at")
                 ->sortable(),
+            Column::make('Actions')
+            ->label(fn($row) => view('components.table-action', [
+                'rowId'     => $row->admin_id,
+                'editUrl'   => route('admin.edit', $row->admin_id),
+                'deleteUrl' => route('admin.destroy', $row->admin_id),
+            ])->render())
+            ->html(),
+
         ];
     }
 }

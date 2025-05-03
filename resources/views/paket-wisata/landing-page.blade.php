@@ -7,6 +7,12 @@
     <title>BALI OM TOURS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {{-- pastikan Flatpickr & Alpine sudah ter-include --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    @livewireStyles
 </head>
 
 <body class="bg-gray-50">
@@ -87,11 +93,17 @@
                                     </div>
                                 </div>
 
-                                {{-- Tombol Pilih --}}
-                                <button onclick="pilihPaket('{{ addslashes($item->nama) }}', {{ $item->harga }})"
+                                <button
+                                    onclick="openStep1(
+                                  {{ $item->paketwisata_id }},
+                                  '{{ addslashes($item->judul) }}',
+                                  {{ $item->harga }},
+                                  '{{ $item->foto }}'
+                                )"
                                     class="bg-teal-600 hover:bg-teal-500 text-white px-5 py-2 rounded-md transition-colors duration-200">
                                     Pilih Paket
                                 </button>
+
                             </div>
 
                         </div>
@@ -101,7 +113,7 @@
             </div>
 
             <div class="text-center mt-10">
-                <a href="paket-wisata" class="text-teal-600 font-semibold hover:text-teal-800 transition">Lihat Semua
+                <a href="paket" class="text-teal-600 font-semibold hover:text-teal-800 transition">Lihat Semua
                     Paket
                     <i class="fas fa-arrow-right ml-1"></i></a>
             </div>
@@ -118,7 +130,7 @@
             </div>
             <!-- Teks -->
             <div class="w-full md:w-1/2 text-center md:text-left">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Tentang Wisata Indonesia</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Tentang Bali Om Tour</h2>
                 <div class="w-16 h-1 bg-teal-600 mx-auto md:mx-0 mb-6"></div>
                 <p class="text-gray-600 leading-relaxed mb-6">
                     Sejak didirikan pada 2010, kami telah membantu ribuan pelancong menjelajahi keindahan alam dan
@@ -134,312 +146,304 @@
         </div>
     </section>
 
-
-    <!-- Form Pemesanan Modal -->
-    <div id="pemesananModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-lg w-full max-w-3xl mx-4 overflow-hidden">
-            <div class="bg-teal-600 text-white px-6 py-4 flex justify-between items-center">
-                <h3 class="text-xl font-semibold">Form Pemesanan</h3>
-                <button id="closeModal" class="text-white text-xl hover:text-gray-200">&times;</button>
-            </div>
-            <div class="p-6">
-                <div id="formStep1" class="form-step">
-                    <h4 class="text-lg font-semibold mb-4 text-gray-800">Pilih Tanggal dan Jumlah Peserta</h4>
-                    <div class="mb-4">
-                        <p class="font-medium text-gray-700 mb-2">Paket Wisata: <span id="selectedPaket"
-                                class="font-semibold text-teal-600"></span></p>
-                        <p class="font-medium text-gray-700 mb-4">Harga: <span id="selectedHarga"
-                                class="font-semibold text-teal-600"></span></p>
+    <div id="pickerContainer"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center md:items-start justify-center p-4 sm:p-6 z-50">
+        <div
+            class="bg-white rounded-lg shadow-lg w-full max-w-sm sm:max-w-lg md:max-w-4xl h-full sm:h-auto overflow-auto">
+            {{-- STEP 1 --}}
+            <div id="step1" class="p-4 sm:p-6">
+                <h4 class="text-lg sm:text-xl font-semibold mb-4 text-gray-800">1. Pilih Tanggal & Armada</h4>
+                <div class="flex flex-col md:flex-row md:gap-6">
+                    {{-- Kalender --}}
+                    <div class="w-full md:w-1/2 mb-4 md:mb-0">
+                        <input id="tglPicker" type="text"
+                            class="w-full cursor-pointer rounded-lg border border-gray-300 shadow-inner py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            readonly />
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="tanggalBerangkat" class="block text-gray-700 mb-2">Tanggal Berangkat</label>
-                            <input type="date" id="tanggalBerangkat"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    {{-- Armada --}}
+                    <div class="w-full md:w-1/2">
+                        <h5 class="font-medium mb-2 text-gray-700">Armada Tersedia</h5>
+                        <div id="kendaraanList"
+                            class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal-300 scrollbar-track-gray-100">
+                            @foreach ($mobil as $m)
+                                <button type="button" data-tipe="{{ $m->nama_kendaraan }}"
+                                    data-id="{{ $m->tipemobil_id }}"
+                                    class="kendaraan-btn flex flex-col items-center text-center bg-white p-3 sm:p-4 rounded-2xl shadow-sm
+                            border-2 border-transparent hover:border-teal-300 transition duration-200">
+                                    <div class="w-full h-24 mb-3 overflow-hidden rounded-lg">
+                                        <img src="{{ $m->foto ? asset('storage/' . $m->foto) : asset('images/default-car.jpg') }}"
+                                            alt="{{ $m->nama_kendaraan }}" class="w-full h-full object-cover" />
+                                    </div>
+                                    <span class="font-semibold text-gray-800">{{ $m->nama_kendaraan }}</span>
+                                    <span class="text-sm text-gray-500">{{ $m->jumlah_tempat_duduk }} Kursi</span>
+                                </button>
+                            @endforeach
                         </div>
-                        <div>
-                            <label for="jumlahPeserta" class="block text-gray-700 mb-2">Jumlah Peserta</label>
-                            <input type="number" id="jumlahPeserta" min="1" value="1"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                    </div>
-                    <div class="flex justify-end">
-                        <button onclick="nextStep(2)"
-                            class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Lanjutkan</button>
-                    </div>
-                </div>
-
-                <div id="formStep2" class="form-step hidden">
-                    <h4 class="text-lg font-semibold mb-4 text-gray-800">Pilih Kendaraan</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div class="border border-gray-200 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition"
-                            onclick="pilihKendaraan('Avanza', 'Ekonomi')">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-car text-teal-600 mr-2"></i>
-                                <h5 class="font-medium">Toyota Avanza</h5>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Kapasitas: 6 orang</p>
-                            <span
-                                class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Ekonomi</span>
-                        </div>
-                        <div class="border border-gray-200 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition"
-                            onclick="pilihKendaraan('Innova', 'Standar')">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-car text-teal-600 mr-2"></i>
-                                <h5 class="font-medium">Toyota Innova</h5>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Kapasitas: 7 orang</p>
-                            <span
-                                class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Standar</span>
-                        </div>
-                        <div class="border border-gray-200 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition"
-                            onclick="pilihKendaraan('Alphard', 'Premium')">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-car text-teal-600 mr-2"></i>
-                                <h5 class="font-medium">Toyota Alphard</h5>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Kapasitas: 7 orang</p>
-                            <span
-                                class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Premium</span>
-                        </div>
-                        <div class="border border-gray-200 rounded-md p-4 cursor-pointer hover:bg-gray-50 transition"
-                            onclick="pilihKendaraan('Hiace', 'Grup')">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-shuttle-van text-teal-600 mr-2"></i>
-                                <h5 class="font-medium">Toyota Hiace</h5>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-2">Kapasitas: 16 orang</p>
-                            <span
-                                class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Grup</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-between">
-                        <button onclick="prevStep(1)"
-                            class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Kembali</button>
-                        <button onclick="nextStep(3)"
-                            class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Lanjutkan</button>
                     </div>
                 </div>
-
-                <div id="formStep3" class="form-step hidden">
-                    <h4 class="text-lg font-semibold mb-4 text-gray-800">Data Pemesan</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label for="nama" class="block text-gray-700 mb-2">Nama Lengkap</label>
-                            <input type="text" id="nama"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700 mb-2">Email</label>
-                            <input type="email" id="email"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label for="telepon" class="block text-gray-700 mb-2">Nomor Telepon</label>
-                            <input type="tel" id="telepon"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                        <div>
-                            <label for="alamat" class="block text-gray-700 mb-2">Alamat</label>
-                            <input type="text" id="alamat"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
-                    </div>
-                    <div class="mb-4">
-                        <label for="catatan" class="block text-gray-700 mb-2">Catatan Khusus (opsional)</label>
-                        <textarea id="catatan" rows="3"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"></textarea>
-                    </div>
-                    <div class="flex justify-between">
-                        <button onclick="prevStep(2)"
-                            class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">Kembali</button>
-                        <button onclick="submitPemesanan()"
-                            class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Pesan
-                            Sekarang</button>
-                    </div>
-                </div>
-
-                <div id="formStep4" class="form-step hidden">
-                    <div class="text-center py-6">
-                        <div class="w-16 h-16 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-4">
-                            <i class="fas fa-check text-2xl text-green-600"></i>
-                        </div>
-                        <h4 class="text-xl font-semibold mb-2 text-gray-800">Pemesanan Berhasil!</h4>
-                        <p class="text-gray-600 mb-6">Terima kasih telah memesan paket wisata kami. Detail pemesanan
-                            telah dikirim ke email Anda.</p>
-                        <div class="bg-gray-50 p-4 rounded-md mb-6 text-left">
-                            <h5 class="font-medium mb-2 text-gray-800">Ringkasan Pemesanan:</h5>
-                            <p class="text-gray-700 mb-1">Paket: <span id="summaryPaket" class="font-medium"></span>
-                            </p>
-                            <p class="text-gray-700 mb-1">Tanggal: <span id="summaryTanggal"
-                                    class="font-medium"></span></p>
-                            <p class="text-gray-700 mb-1">Jumlah Peserta: <span id="summaryPeserta"
-                                    class="font-medium"></span></p>
-                            <p class="text-gray-700 mb-1">Kendaraan: <span id="summaryKendaraan"
-                                    class="font-medium"></span></p>
-                            <p class="text-gray-700 mb-1">Total Pembayaran: <span id="summaryTotal"
-                                    class="font-medium text-teal-600"></span></p>
-                        </div>
-                        <button onclick="closeModal()"
-                            class="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">Tutup</button>
-                    </div>
+                <div class="mt-4 sm:mt-6 flex justify-end space-x-2">
+                    <button onclick="closePicker()"
+                        class="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition">
+                        Batal
+                    </button>
+                    <button onclick="toStep2()"
+                        class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-500 transition">
+                        Input Data Pemesan
+                    </button>
                 </div>
             </div>
+
+            {{-- STEP 2 --}}
+            <div id="step2" class="hidden p-4 sm:p-6 bg-gray-50">
+                <h4 class="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">2. Lengkapi Data Pemesan</h4>
+
+                {{-- PREVIEW FOTO --}}
+                <div id="previewFotoWrapper" class="hidden mb-4 sm:mb-6">
+                    <img id="previewFoto" src="" alt="Foto Paket"
+                        class="w-full h-40 sm:h-48 object-cover rounded-lg shadow-sm" />
+                </div>
+
+                <form action="{{ route('pemesanan.store') }}" method="POST"
+                    class="flex flex-col md:flex-row md:gap-6">
+                    @csrf
+
+                    {{-- Ringkasan Pemesanan --}}
+                    <div class="w-full md:w-1/2 mb-4 md:mb-0 space-y-4">
+                        <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg">
+                            <h5 class="text-base sm:text-lg font-semibold mb-3 text-gray-700">Ringkasan Pemesanan</h5>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-center">
+                                    <i class="fas fa-box-open text-teal-600 w-5"></i>
+                                    <span class="ml-2">Paket:</span>
+                                    <span id="previewPaket" class="ml-auto font-medium text-gray-800"></span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-calendar-alt text-teal-600 w-5"></i>
+                                    <span class="ml-2">Tanggal:</span>
+                                    <span id="previewTanggal" class="ml-auto font-medium text-gray-800"></span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-car-side text-teal-600 w-5"></i>
+                                    <span class="ml-2">Armada:</span>
+                                    <span id="previewKendaraan" class="ml-auto font-medium text-gray-800"></span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-tag text-teal-600 w-5"></i>
+                                    <span class="ml-2">Harga:</span>
+                                    <span id="previewHarga" class="ml-auto font-medium text-gray-800"></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- Hidden fields --}}
+                        <input type="hidden" name="paket_id" id="inputPaketId">
+                        <input type="hidden" name="tanggal" id="inputTanggal">
+                        <input type="hidden" name="kendaraan" id="inputKendaraan">
+                        <input type="hidden" name="mobil_id" id="inputMobilId">
+                        <input type="hidden" name="harga" id="inputHarga">
+                        <input type="hidden" name="jumlah_peserta" id="inputPeserta">
+                    </div>
+
+                    {{-- Form Data Pemesan --}}
+                    <div class="w-full md:w-1/2 space-y-4">
+                        <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg space-y-4">
+                            <h5 class="text-base sm:text-lg font-semibold text-gray-700">Detail Pemesan</h5>
+                            <label class="block">
+                                <span class="text-gray-600">Nama Pemesan</span>
+                                <input type="text" name="nama_pemesan" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-600">Email</span>
+                                <input type="email" name="email" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-600">Alamat</span>
+                                <input type="text" name="alamat" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" />
+                            </label>
+                            <label class="block">
+                                <span class="text-gray-600">Nomor WhatsApp</span>
+                                <input type="text" name="nomor_whatsapp" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" />
+                            </label>
+
+                            <label class="block">
+                                <span class="text-gray-600">Jumlah Peserta</span>
+                                <input id="jumlahPesertaInput" type="text" name="jumlah_peserta" value=""
+                                    inputmode="numeric" pattern="\d*"
+                                    oninput="this.value = this.value.replace(/\D/g, '')" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm
+                                         focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500" />
+                            </label>
+
+                        </div>
+
+                        {{-- Aksi --}}
+                        <div class="flex justify-between mt-4">
+                            <button type="button" onclick="backToStep1()"
+                                class="px-5 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition">
+                                Kembali
+                            </button>
+                            <button type="submit"
+                                class="px-5 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-500 transition">
+                                Konfirmasi & Bayar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
+
+
+
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-mountain text-teal-400 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl">Wisata Indonesia</span>
-                    </div>
-                    <p class="text-gray-400 mb-4">Menyediakan paket wisata terbaik dengan harga terjangkau dan
-                        pelayanan premium untuk pengalaman liburan yang tak terlupakan.</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Tautan Cepat</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#beranda" class="text-gray-400 hover:text-teal-400 transition">Beranda</a></li>
-                        <li><a href="#paket" class="text-gray-400 hover:text-teal-400 transition">Paket Wisata</a>
-                        </li>
-                        <li><a href="#tentang" class="text-gray-400 hover:text-teal-400 transition">Tentang Kami</a>
-                        </li>
-                        <li><a href="#kontak" class="text-gray-400 hover:text-teal-400 transition">Kontak</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Destinasi Populer</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Bali</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Yogyakarta</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Raja Ampat</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Labuan Bajo</a>
-                        </li>
-                        <li><a href="#" class="text-gray-400 hover:text-teal-400 transition">Lombok</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Berlangganan</h4>
-                    <p class="text-gray-400 mb-4">Dapatkan info terbaru dan promo menarik dari kami.</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Email Anda"
-                            class="px-4 py-2 rounded-l-md focus:outline-none w-full">
-                        <button class="bg-teal-600 text-white px-4 py-2 rounded-r-md hover:bg-teal-700 transition">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>&copy; 2025 Wisata Indonesia. All rights reserved.</p>
+                <p>&copy; 2025 Bali Om Tour. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Mobile Menu Toggle
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
 
         menuToggle.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
-
-
-        // Modal Functions
-        const modal = document.getElementById('pemesananModal');
-        let currentStep = 1;
-        let pemesananData = {
-            paket: '',
-            harga: 0,
-            tanggal: '',
-            jumlahPeserta: 1,
-            kendaraan: '',
-            tipeKendaraan: '',
-            nama: '',
-            email: '',
-            telepon: '',
-            alamat: '',
-            catatan: ''
-        };
-
-        function pilihPaket(namaPaket, harga) {
-            pemesananData.paket = namaPaket;
-            pemesananData.harga = harga;
-
-            document.getElementById('selectedPaket').textContent = namaPaket;
-            document.getElementById('selectedHarga').textContent = formatRupiah(harga);
-
-            openModal();
-        }
-
-        function openModal() {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            resetForm();
-        }
-
-        document.getElementById('closeModal').addEventListener('click', closeModal);
-
-        function nextStep(step) {
-            // Validate current step
-            if (step === 2) {
-                const tanggal = document.getElementById('tanggalBerangkat').value;
-                const jumlahPeserta = document.getElementById('jumlahPeserta').value;
-
-                if (!tanggal) {
-                    alert('Silakan pilih tanggal keberangkatan');
-                    return;
-                }
-
-                pemesananData.tanggal = tanggal;
-                pemesananData.jumlahPeserta = jumlahPeserta;
-            } else if (step === 3) {
-                if (!pemesananData.kendaraan) {
-                    alert('Silakan pilih kendaraan');
-                    return;
-                }
-            }
-
-            document.getElementById(`formStep${currentStep}`).classList.add('hidden');
-            document.getElementById(`formStep${step}`).classList.remove('hidden');
-            currentStep = step;
-        }
-
-        function prevStep(step) {
-            document.getElementById(`formStep${currentStep}`).classList.add('hidden');
-            document.getElementById(`formStep${step}`).classList.remove('hidden');
-            currentStep = step;
-        }
-
-        // Helper functions
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(angka);
-        }
-
-        function formatDate(dateString) {
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            return new Date(dateString).toLocaleDateString('id-ID', options);
-        }
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // base URL untuk storage
+            const storageUrl = "{{ asset('storage') }}";
+
+            // state untuk menyimpan pilihan
+            const selected = {
+                paketId: null,
+                paketNama: '',
+                harga: 0,
+                tanggal: '',
+                kendaraanNama: '',
+                kendaraanId: null,
+                fotoPath: '',
+                jumlah_peserta: ''
+
+            };
+
+            // inisialisasi Flatpickr
+            flatpickr("#tglPicker", {
+                inline: true,
+                locale: "id",
+                dateFormat: "d-m-Y",
+                onChange: (dates, str) => {
+                    selected.tanggal = str;
+                }
+            });
+
+            const picker = document.getElementById('pickerContainer');
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+
+            // fungsi dipanggil oleh onclick di blade
+            window.openStep1 = function(id, nama, hr, foto) {
+                selected.paketId = id;
+                selected.paketNama = nama;
+                selected.harga = hr;
+
+                // bangun URL lengkap ke storage
+                selected.fotoPath = foto ?
+                    storageUrl + '/' + foto :
+                    '';
+
+                // reset tanggal & armada
+                selected.tanggal = '';
+                selected.kendaraanId = null;
+                selected.kendaraanNama = '';
+                document.querySelectorAll('.kendaraan-btn')
+                    .forEach(b => b.classList.remove('border-teal-300'));
+
+                // tampilkan step1
+                picker.classList.remove('hidden');
+                step1.classList.remove('hidden');
+                step2.classList.add('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            // highlight & simpan armada
+            document.querySelectorAll('.kendaraan-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    selected.kendaraanId = btn.dataset.id;
+                    selected.kendaraanNama = btn.dataset.tipe;
+
+                    document.querySelectorAll('.kendaraan-btn')
+                        .forEach(b => b.classList.remove('border-teal-300'));
+                    btn.classList.add('border-teal-300');
+                });
+            });
+
+            // lanjut ke step2
+            window.toStep2 = function() {
+                if (!selected.tanggal) return alert('Pilih tanggal dahulu');
+                if (!selected.kendaraanId) return alert('Pilih armada dahulu');
+
+                // isi preview teks
+                document.getElementById('previewPaket').innerText = selected.paketNama;
+                document.getElementById('previewTanggal').innerText = selected.tanggal;
+                document.getElementById('previewKendaraan').innerText = selected.kendaraanNama;
+                document.getElementById('previewHarga').innerText =
+                    new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    })
+                    .format(selected.harga);
+
+                // tampilkan foto dengan URL storage
+                const fotoEl = document.getElementById('previewFoto');
+                fotoEl.src = selected.fotoPath;
+                document.getElementById('previewFotoWrapper').classList.remove('hidden');
+
+                // isi input tersembunyi
+                document.getElementById('inputPaketId').value = selected.paketId;
+                document.getElementById('inputTanggal').value = selected.tanggal;
+                document.getElementById('inputKendaraan').value = selected.kendaraanNama;
+                document.getElementById('inputMobilId').value = selected.kendaraanId;
+                document.getElementById('inputHarga').value = selected.harga;
+                document.getElementById('inputPeserta').value = selected.jumlah_peserta;
+
+                // pindah step
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+            };
+
+            // kembali ke step1
+            window.backToStep1 = function() {
+                step2.classList.add('hidden');
+                step1.classList.remove('hidden');
+            };
+
+            // tutup modal
+            window.closePicker = function() {
+                picker.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+        });
+    </script>
+
+
 </body>
 
 </html>

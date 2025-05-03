@@ -31,7 +31,8 @@ class SopirController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('sopir');
+            $data['foto'] = $request->file('foto')->store('sopir','public');
+
         }
 
         Sopir::create($data);
