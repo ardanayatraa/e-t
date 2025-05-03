@@ -47,7 +47,7 @@
     <section id="paket" class="py-20 bg-white">
         <div class="container pt-10 mx-auto px-4">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Paket Wisata Tersedia</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Paket Wisata</h2>
                 <div class="w-20 h-1 bg-teal-600 mx-auto mb-6"></div>
                 <p class="text-gray-600 max-w-3xl mx-auto">Pilih paket wisata sesuai dengan kebutuhan dan budget Anda.
                     Kami menawarkan berbagai pilihan destinasi menarik.</p>
