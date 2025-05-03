@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('nomor_kendaraan', 20);
             $table->integer('jumlah_tempat_duduk');
             $table->string('status_ketersediaan', 200);
+            $table->string('foto', 200);
+
             $table->timestamps();
 
         });

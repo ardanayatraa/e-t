@@ -367,7 +367,7 @@
                         <img src="https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
                             alt="Raja Ampat" class="w-full h-56 object-cover">
                         <div
-                            class="absolute top-4 right-4 bg-purple-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                            class="absolute top-4 right-4 bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
                             Premium</div>
                     </div>
                     <div class="p-6">
@@ -688,7 +688,7 @@
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Wonderful Journey</h3>

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class IncludeModel extends Model
 {
+
+    protected $table = 'includes';
     protected $primaryKey = 'include_id';
     protected $fillable = ['pemesanan_id', 'bensin', 'parkir', 'supir', 'makan_siang', 'makan_malam', 'tiket_masuk', 'status_ketersediaan'];
 

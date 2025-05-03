@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaketWisata extends Model
 {
     protected $primaryKey = 'paketwisata_id';
-    protected $fillable = ['judul', 'tempat', 'durasi', 'harga'];
+    protected $fillable = ['judul', 'tempat', 'durasi', 'harga','foto','deskripsi'];
 
     public function pemesanans()
     {

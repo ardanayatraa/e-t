@@ -24,4 +24,9 @@ class Pemesanan extends Model
     {
         return $this->belongsTo(Mobil::class, 'tipemobil_id', 'tipemobil_id');
     }
+
+    public function ketersediaan()
+    {
+        return $this->hasOne(Ketersediaan::class, 'pemesanan_id', 'pemesanan_id');
+    }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Mobil extends Model
 {
     protected $primaryKey = 'tipemobil_id';
-    protected $fillable = ['sopir_id', 'nama_kendaraan', 'nomor_kendaraan', 'jumlah_tempat_duduk', 'status_ketersediaan'];
+    protected $fillable = ['sopir_id', 'nama_kendaraan', 'nomor_kendaraan', 'jumlah_tempat_duduk', 'status_ketersediaan','foto'];
 
     public function sopir()
     {
@@ -18,6 +18,11 @@ class Mobil extends Model
     public function pemesanans()
     {
         return $this->hasMany(Pemesanan::class, 'tipemobil_id', 'tipemobil_id');
+    }
+
+    public function ketersediaans()
+    {
+        return $this->hasMany(Ketersediaan::class, 'mobil_id', 'tipemobil_id');
     }
 }
 
