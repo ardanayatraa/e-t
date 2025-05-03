@@ -101,7 +101,8 @@
             </div>
 
             <div class="text-center mt-10">
-                <a href="#" class="text-teal-600 font-semibold hover:text-teal-800 transition">Lihat Semua Paket
+                <a href="paket-wisata" class="text-teal-600 font-semibold hover:text-teal-800 transition">Lihat Semua
+                    Paket
                     <i class="fas fa-arrow-right ml-1"></i></a>
             </div>
         </div>

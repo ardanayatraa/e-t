@@ -34,7 +34,8 @@ Route::middleware([
     })->name('dashboard');
 
         Route::resource('admin',         AdminController::class);
-        Route::resource('paket-wisata',  PaketWisataController::class);
+        Route::resource('paket-wisata', PaketWisataController::class)
+        ->parameters(['paket-wisata' => 'paket_wisata']);
         Route::resource('pelanggan',     PelangganController::class);
         Route::resource('sopir',         SopirController::class);
         Route::resource('mobil',         MobilController::class);
