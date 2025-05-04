@@ -10,8 +10,8 @@ class SopirController extends Controller
 {
     public function index()
     {
-        $supirs = Sopir::all();
-        return view('sopir.index', compact('supirs'));
+        $sopirs = Sopir::all();
+        return view('sopir.index', compact('sopirs'));
     }
 
     public function create()
@@ -36,7 +36,7 @@ class SopirController extends Controller
         }
 
         Sopir::create($data);
-        return redirect()->route('sopir.index')->with('success', 'Supir created.');
+        return redirect()->route('sopir.index')->with('success', 'sopir created.');
     }
 
     public function show(Sopir $sopir)
@@ -65,12 +65,12 @@ class SopirController extends Controller
         }
 
         $sopir->update($data);
-        return redirect()->route('sopir.index')->with('success', 'Supir updated.');
+        return redirect()->route('sopir.index')->with('success', 'sopir updated.');
     }
 
     public function destroy(Sopir $sopir)
     {
         $sopir->delete();
-        return redirect()->route('sopir.index')->with('success', 'Supir deleted.');
+        return redirect()->route('sopir.index')->with('success', 'sopir deleted.');
     }
 }

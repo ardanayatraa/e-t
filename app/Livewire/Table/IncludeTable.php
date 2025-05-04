@@ -12,7 +12,7 @@ class IncludeTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('include_id');
     }
 
     public function columns(): array
@@ -26,7 +26,7 @@ class IncludeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Parkir", "parkir")
                 ->sortable(),
-            Column::make("Supir", "supir")
+            Column::make("sopir", "sopir")
                 ->sortable(),
             Column::make("Makan siang", "makan_siang")
                 ->sortable(),
@@ -40,6 +40,13 @@ class IncludeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Updated at", "updated_at")
                 ->sortable(),
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->include_id,
+                    'editUrl'   => route('include-model.edit', $row->include_id),
+                    'deleteUrl' => route('include-model.destroy', $row->include_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

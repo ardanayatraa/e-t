@@ -53,17 +53,17 @@
 
                         {{-- Tipe Mobil --}}
                         <div>
-                            <label for="tipemobil_id" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="mobil_id" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Tipe Mobil
                             </label>
-                            <select id="tipemobil_id" name="tipemobil_id" required
+                            <select id="mobil_id" name="mobil_id" required
                                 class="block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition">
                                 <option value="">-- Pilih Mobil --</option>
                                 {{-- Pastikan controller menyediakan $mobils --}}
                                 @foreach ($mobils as $m)
-                                    <option value="{{ $m->tipemobil_id }}"
-                                        {{ old('tipemobil_id') == $m->tipemobil_id ? 'selected' : '' }}>
+                                    <option value="{{ $m->mobil_id }}"
+                                        {{ old('mobil_id') == $m->mobil_id ? 'selected' : '' }}>
                                         {{ $m->nama_kendaraan }} – {{ $m->nomor_kendaraan }}
                                     </option>
                                 @endforeach

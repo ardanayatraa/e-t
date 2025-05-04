@@ -12,7 +12,7 @@ class TransaksiTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('transaksi_id');
     }
 
     public function columns(): array
@@ -20,28 +20,42 @@ class TransaksiTable extends DataTableComponent
         return [
             Column::make("Transaksi id", "transaksi_id")
                 ->sortable(),
-            Column::make("Peketwisata id", "peketwisata_id")
+
+            Column::make("Paketwisata id", "paketwisata_id")
                 ->sortable(),
+
             Column::make("Pemesan id", "pemesan_id")
                 ->sortable(),
+
             Column::make("Pemesanan id", "pemesanan_id")
                 ->sortable(),
-            Column::make("Jenis transakasi", "jenis_transakasi")
+
+            Column::make("Jenis transaksi", "jenis_transaksi")
                 ->sortable(),
+
             Column::make("Jumlah peserta", "jumlah_peserta")
                 ->sortable(),
+
             Column::make("Owe to me", "owe_to_me")
                 ->sortable(),
+
             Column::make("Pay to provider", "pay_to_provider")
                 ->sortable(),
-            Column::make("Total transaksai", "total_transaksai")
+
+            Column::make("Total transaksi", "total_transaksi")
                 ->sortable(),
+
             Column::make("Transaksi status", "transaksi_status")
                 ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+
+
+            Column::make('Actions')
+                ->label(fn($row) => view('components.transaksi-action', [
+                    'rowId'     => $row->transaksi_id,
+                    'confirmUrl'   => route('transaksi.confirm', $row->transaksi_id),
+                    'status'=>$row->transaksi_status
+                ])->render())
+                ->html(),
         ];
     }
 }

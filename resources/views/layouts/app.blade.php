@@ -30,87 +30,94 @@
         <!-- Sidebar -->
         <aside class="bg-gray-800 text-white w-64 flex-shrink-0 hidden md:block">
             <div class="p-4 flex items-center border-b border-gray-700">
-                <span class="font-bold text-xl">Admin Panel</span>
+                <span class="font-bold text-xl">OM TOURS Panel</span>
             </div>
             <nav class="mt-4">
                 <div class="px-4 py-2 text-gray-400 text-xs font-semibold">MENU UTAMA</div>
 
                 {{-- Dashboard --}}
-                <a href="{{ route('admin.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('admin.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center px-4 py-3 {{ request()->routeIs('dashboard') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                     <i class="fas fa-tachometer-alt w-6"></i>
                     <span class="ml-2">Dashboard</span>
                 </a>
+                @if (auth()->user()->type == 'admin')
+                    {{-- Paket Wisata --}}
+                    <a href="{{ route('admin.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('admin.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-circle-user w-6"></i>
+                        <span class="ml-2">Admin</span>
+                    </a>
+                    {{-- Paket Wisata --}}
+                    <a href="{{ route('paket-wisata.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('paket-wisata.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-suitcase w-6"></i>
+                        <span class="ml-2">Paket Wisata</span>
+                    </a>
 
-                {{-- Paket Wisata --}}
-                <a href="{{ route('paket-wisata.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('paket-wisata.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-suitcase w-6"></i>
-                    <span class="ml-2">Paket Wisata</span>
+                    {{-- Kendaraan (Mobil) --}}
+                    <a href="{{ route('mobil.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('mobil.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-car w-6"></i>
+                        <span class="ml-2">Kendaraan</span>
+                    </a>
+
+                    {{-- Sopir --}}
+                    <a href="{{ route('sopir.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('sopir.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-user-tie w-6"></i>
+                        <span class="ml-2">Sopir</span>
+                    </a>
+
+                    {{-- Pemesanan --}}
+                    <a href="{{ route('pemesanan.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('pemesanan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-calendar-check w-6"></i>
+                        <span class="ml-2">Pemesanan</span>
+                    </a>
+
+                    {{-- Pelanggan --}}
+                    <a href="{{ route('pelanggan.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('pelanggan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-users w-6"></i>
+                        <span class="ml-2">Pelanggan</span>
+                    </a>
+
+                    {{-- Ketersediaan --}}
+                    <a href="{{ route('ketersediaan.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('ketersediaan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-clock w-6"></i>
+                        <span class="ml-2">Ketersediaan</span>
+                    </a>
+
+                    {{-- Include --}}
+                    <a href="{{ route('include.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('include.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-plus-square w-6"></i>
+                        <span class="ml-2">Include</span>
+                    </a>
+
+                    {{-- Exclude --}}
+                    <a href="{{ route('exclude.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('exclude.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-minus-square w-6"></i>
+                        <span class="ml-2">Exclude</span>
+                    </a>
+
+                    {{-- Pembayaran (Transaksi) --}}
+                    <a href="{{ route('transaksi.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-file-invoice-dollar w-6"></i>
+                        <span class="ml-2">Pembayaran</span>
+                    </a>
+                @endif
+                {{-- Laporan Transaksi --}}
+                <a href="{{ route('laporan') }}"
+                    class="flex items-center px-4 py-3 {{ request()->routeIs('laporan') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                    <i class="fas fa-file-alt w-6"></i>
+                    <span class="ml-2">Laporan</span>
                 </a>
 
-                {{-- Kendaraan (Mobil) --}}
-                <a href="{{ route('mobil.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('mobil.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-car w-6"></i>
-                    <span class="ml-2">Kendaraan</span>
-                </a>
-
-                {{-- Sopir --}}
-                <a href="{{ route('sopir.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('sopir.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-user-tie w-6"></i>
-                    <span class="ml-2">Sopir</span>
-                </a>
-
-                {{-- Pemesanan --}}
-                <a href="{{ route('pemesanan.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('pemesanan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-calendar-check w-6"></i>
-                    <span class="ml-2">Pemesanan</span>
-                </a>
-
-                {{-- Pelanggan --}}
-                <a href="{{ route('pelanggan.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('pelanggan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-users w-6"></i>
-                    <span class="ml-2">Pelanggan</span>
-                </a>
-
-                {{-- Ketersediaan --}}
-                <a href="{{ route('ketersediaan.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('ketersediaan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-clock w-6"></i>
-                    <span class="ml-2">Ketersediaan</span>
-                </a>
-
-                {{-- Include --}}
-                <a href="{{ route('include.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('include.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-plus-square w-6"></i>
-                    <span class="ml-2">Include</span>
-                </a>
-
-                {{-- Exclude --}}
-                <a href="{{ route('exclude.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('exclude.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-minus-square w-6"></i>
-                    <span class="ml-2">Exclude</span>
-                </a>
-
-                {{-- Pembayaran (Transaksi) --}}
-                <a href="{{ route('transaksi.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-file-invoice-dollar w-6"></i>
-                    <span class="ml-2">Pembayaran</span>
-                </a>
-
-                {{-- E-Ticket (Detail Transaksi) --}}
-                <a href="{{ route('detail-transaksi.index') }}"
-                    class="flex items-center px-4 py-3 {{ request()->routeIs('detail-transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                    <i class="fas fa-ticket-alt w-6"></i>
-                    <span class="ml-2">E-Ticket</span>
-                </a>
             </nav>
         </aside>
 
@@ -128,7 +135,7 @@
                 <div class="p-4 flex items-center justify-between border-b border-gray-700">
                     <div class="flex items-center">
                         <i class="fas fa-mountain text-teal-400 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl">Admin Panel</span>
+                        <span class="font-bold text-xl">OM TOURS Panel</span>
                     </div>
                     <button id="closeSidebar" class="text-white">
                         <i class="fas fa-times"></i>
@@ -140,6 +147,13 @@
                         class="flex items-center px-4 py-3 {{ request()->routeIs('admin.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-tachometer-alt w-6"></i>
                         <span class="ml-2">Dashboard</span>
+                    </a>
+
+                    {{-- Paket Wisata --}}
+                    <a href="{{ route('admin.index') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('admin.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-circle-user w-6"></i>
+                        <span class="ml-2">Admin</span>
                     </a>
 
                     {{-- Paket Wisata --}}
@@ -205,12 +219,15 @@
                         <span class="ml-2">Pembayaran</span>
                     </a>
 
-                    {{-- E-Ticket (Detail Transaksi) --}}
-                    <a href="{{ route('detail-transaksi.index') }}"
-                        class="flex items-center px-4 py-3 {{ request()->routeIs('detail-transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
-                        <i class="fas fa-ticket-alt w-6"></i>
-                        <span class="ml-2">E-Ticket</span>
+
+                    {{-- Laporan Transaksi --}}
+                    <a href="{{ route('laporan') }}"
+                        class="flex items-center px-4 py-3 {{ request()->routeIs('laporan') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
+                        <i class="fas fa-file-alt w-6"></i>
+                        <span class="ml-2">Laporan</span>
                     </a>
+
+
                 </nav>
             </div>
         </div>

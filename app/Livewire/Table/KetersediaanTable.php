@@ -12,7 +12,7 @@ class KetersediaanTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('terpesan_id');
     }
 
     public function columns(): array
@@ -24,7 +24,7 @@ class KetersediaanTable extends DataTableComponent
                 ->sortable(),
             Column::make("Mobil id", "mobil_id")
                 ->sortable(),
-            Column::make("Supir id", "supir_id")
+            Column::make("sopir id", "sopir_id")
                 ->sortable(),
             Column::make("Tanggal keberangkatan", "tanggal_keberangkatan")
                 ->sortable(),
@@ -34,6 +34,13 @@ class KetersediaanTable extends DataTableComponent
                 ->sortable(),
             Column::make("Updated at", "updated_at")
                 ->sortable(),
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->terpesan_id,
+                    'editUrl'   => route('ketersediaan.edit', $row->terpesan_id),
+                    'deleteUrl' => route('ketersediaan.destroy', $row->terpesan_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pemesanan extends Model
 {
-    protected $primaryKey = 'pamesanan_id';
-    protected $fillable = ['pemesan_id', 'paketwisata_id', 'tipemobil_id', 'jam_mulai', 'tanggal_keberangkatan'];
+    protected $primaryKey = 'pemesanan_id';
+    protected $fillable = ['pemesan_id', 'paketwisata_id', 'mobil_id', 'jam_mulai', 'tanggal_keberangkatan'];
 
     public function pelanggan()
     {
@@ -22,7 +22,7 @@ class Pemesanan extends Model
 
     public function mobil()
     {
-        return $this->belongsTo(Mobil::class, 'tipemobil_id', 'tipemobil_id');
+        return $this->belongsTo(Mobil::class, 'mobil_id', 'mobil_id');
     }
 
     public function ketersediaan()

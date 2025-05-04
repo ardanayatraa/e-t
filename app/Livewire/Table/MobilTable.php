@@ -19,7 +19,7 @@ class MobilTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("Tipemobil id", "tipemobil_id")
+            Column::make("Tipemobil id", "mobil_id")
                 ->sortable(),
             Column::make("Sopir id", "sopir_id")
                 ->sortable(),
@@ -31,17 +31,21 @@ class MobilTable extends DataTableComponent
                 ->sortable(),
             Column::make("Status ketersediaan", "status_ketersediaan")
                 ->sortable(),
-                Column::make("Foto", "foto")
+            Column::make("Foto", "foto")
                 ->format(fn($value, $row) =>
                     '<img src="'.Storage::url($value).'" '
-                  . 'alt="'.e($row->nama_sopir).'" '
+                  . 'alt="'.e($row->nama_kendaraan).'" '
                   . 'class="w-20 h-20 object-cover rounded-md" />'
                 )
                 ->html(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->mobil_id,
+                    'editUrl'   => route('mobil.edit', $row->mobil_id),
+                    'deleteUrl' => route('mobil.destroy', $row->mobil_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

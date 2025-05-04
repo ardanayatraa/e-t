@@ -12,7 +12,7 @@ class PelangganTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('pelanggan_id');
     }
 
     public function columns(): array
@@ -20,18 +20,26 @@ class PelangganTable extends DataTableComponent
         return [
             Column::make("Pelanggan id", "pelanggan_id")
                 ->sortable(),
+
             Column::make("Nama pemesan", "nama_pemesan")
                 ->sortable(),
+
             Column::make("Alamat", "alamat")
                 ->sortable(),
+
             Column::make("Email", "email")
                 ->sortable(),
-            Column::make("Nomor whatsaap", "nomor_whatsaap")
+
+            Column::make("Nomor WhatsApp", "nomor_whatsaap")
                 ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->pelanggan_id,
+                    'editUrl'   => route('pelanggan.edit', $row->pelanggan_id),
+                    'deleteUrl' => route('pelanggan.destroy', $row->pelanggan_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

@@ -54,12 +54,12 @@
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition" />
                         </div>
 
-                        {{-- Supir --}}
+                        {{-- sopir --}}
                         <div>
-                            <label for="supir" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Supir
+                            <label for="sopir" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                sopir
                             </label>
-                            <input id="supir" name="supir" type="text" value="{{ old('supir') }}"
+                            <input id="sopir" name="sopir" type="text" value="{{ old('sopir') }}"
                                 placeholder="Misal: Rp200.000"
                                 class="block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition" />

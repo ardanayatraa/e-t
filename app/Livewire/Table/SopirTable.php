@@ -13,7 +13,7 @@ class SopirTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('sopir_id');
     }
 
     public function columns(): array
@@ -45,11 +45,14 @@ class SopirTable extends DataTableComponent
             Column::make("Alamat", "alamat")
                 ->sortable(),
 
-            Column::make("Created at", "created_at")
-                ->sortable(),
 
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->sopir_id,
+                    'editUrl'   => route('sopir.edit', $row->sopir_id),
+                    'deleteUrl' => route('sopir.destroy', $row->sopir_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

@@ -12,7 +12,7 @@ class ExcludeTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('exclude_id');
     }
 
     public function columns(): array
@@ -26,7 +26,7 @@ class ExcludeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Parkir", "parkir")
                 ->sortable(),
-            Column::make("Supir", "supir")
+            Column::make("sopir", "sopir")
                 ->sortable(),
             Column::make("Makan siang", "makan_siang")
                 ->sortable(),
@@ -40,6 +40,13 @@ class ExcludeTable extends DataTableComponent
                 ->sortable(),
             Column::make("Updated at", "updated_at")
                 ->sortable(),
+            Column::make('Actions')
+                ->label(fn($row) => view('components.table-action', [
+                    'rowId'     => $row->exclude_id,
+                    'editUrl'   => route('exclude.edit', $row->exclude_id),
+                    'deleteUrl' => route('exclude.destroy', $row->exclude_id),
+                ])->render())
+                ->html(),
         ];
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\ExcludeController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\DetailTransaksiController;
 use App\Http\Controllers\MobilController;
+use App\Models\PaketWisata;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +44,12 @@ Route::middleware([
         Route::resource('ketersediaan',  KetersediaanController::class);
         Route::resource('include', IncludeModelController::class)->except(['show']);
         Route::resource('exclude',       ExcludeController::class)->except(['show']);
-        Route::resource('transaksi',      TransaksiController::class)->only(['index','create','store','show']);
-        Route::resource('detail-transaksi', DetailTransaksiController::class)->only(['index']);
+        Route::resource('transaksi',      TransaksiController::class)->except('edit');
+        Route::put('transaksi/{transaksi}/confirm', [TransaksiController::class, 'confirmPayment'])
+        ->name('transaksi.confirm');
+        Route::get('/laporan', [TransaksiController::class, 'laporan'])
+        ->name('laporan');
+
 });
 
 
@@ -53,6 +58,7 @@ Route::get('/paket', [PaketWisataController::class, 'paket'])->name('paket-wisat
 Route::get('/paket/{paketwisata}', [PaketWisataController::class, 'show'])->name('paket-wisata.show');
 Route::get('/booking/create', [PemesananController::class, 'create'])->name('booking.create');
 Route::post('/booking', [PemesananController::class, 'store'])->name('pemesanan.store');
-
+Route::get('/check-availability', [PaketWisataController::class, 'check'])
+     ->name('check-availability');
     Route::get('/transaksi/{transaksi}/ticket', [TransaksiController::class, 'ticket'])
          ->name('transaksi.ticket');

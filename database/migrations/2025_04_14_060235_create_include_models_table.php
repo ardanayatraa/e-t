@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('pemesanan_id');
             $table->string('bensin', 225);
             $table->string('parkir', 225);
-            $table->string('supir', 225);
+            $table->string('sopir', 225);
             $table->string('makan_siang', 225);
             $table->string('makan_malam', 225);
             $table->string('tiket_masuk', 225);

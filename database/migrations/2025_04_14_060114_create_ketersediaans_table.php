@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('terpesan_id');
             $table->unsignedBigInteger('pemesanan_id');
             $table->unsignedBigInteger('mobil_id');
-            $table->unsignedBigInteger('supir_id');
+            $table->unsignedBigInteger('sopir_id');
             $table->date('tanggal_keberangkatan');
             $table->string('status_ketersediaan', 20);
             $table->timestamps();

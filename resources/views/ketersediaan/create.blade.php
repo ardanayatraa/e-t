@@ -42,8 +42,8 @@
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition">
                                 <option value="">-- Pilih Mobil --</option>
                                 @foreach ($mobils as $m)
-                                    <option value="{{ $m->tipemobil_id }}"
-                                        {{ old('mobil_id') == $m->tipemobil_id ? 'selected' : '' }}>
+                                    <option value="{{ $m->mobil_id }}"
+                                        {{ old('mobil_id') == $m->mobil_id ? 'selected' : '' }}>
                                         {{ $m->nama_kendaraan }} – {{ $m->nomor_kendaraan }}
                                     </option>
                                 @endforeach
@@ -52,16 +52,16 @@
 
                         {{-- Sopir --}}
                         <div>
-                            <label for="supir_id" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="sopir_id" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Sopir
                             </label>
-                            <select id="supir_id" name="supir_id" required
+                            <select id="sopir_id" name="sopir_id" required
                                 class="block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition">
                                 <option value="">-- Pilih Sopir --</option>
-                                @foreach ($supirs as $s)
+                                @foreach ($sopirs as $s)
                                     <option value="{{ $s->sopir_id }}"
-                                        {{ old('supir_id') == $s->sopir_id ? 'selected' : '' }}>
+                                        {{ old('sopir_id') == $s->sopir_id ? 'selected' : '' }}>
                                         {{ $s->nama_sopir }}
                                     </option>
                                 @endforeach

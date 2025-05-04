@@ -3,8 +3,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ketersediaan;
 use App\Models\Mobil;
 use App\Models\PaketWisata;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -101,11 +103,30 @@ class PaketWisataController extends Controller
     public function list()
     {
         $paket = PaketWisata::orderBy('created_at', 'desc')
-                            ->limit(3)
                             ->get();
 
         $mobil= Mobil::all();
-
         return view('paket-wisata.landing-page', compact('paket', 'mobil'));
+    }
+
+
+    public function check(Request $request)
+    {
+
+
+        $date= $request->query('date');
+
+
+
+        // mobil yang sudah terpesan pada tanggal itu
+        $taken = Ketersediaan::whereDate('tanggal_keberangkatan', $date)
+                 ->pluck('mobil_id')
+                 ->toArray();
+        // available = semua mobil kecuali yg di-taken
+        $available = Mobil::whereNotIn('mobil_id', $taken)
+                     ->pluck('mobil_id')
+                     ->toArray();
+
+        return response()->json($available);
     }
     }

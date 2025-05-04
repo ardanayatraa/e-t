@@ -21,16 +21,16 @@ class KetersediaanController extends Controller
     {
         $pesanan = Pemesanan::all();
         $mobils  = Mobil::all();
-        $supirs  = Sopir::all();
-        return view('ketersediaan.create', compact('pesanan','mobils','supirs'));
+        $sopirs  = Sopir::all();
+        return view('ketersediaan.create', compact('pesanan','mobils','sopirs'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'pemesanan_id'         => 'required|exists:pemesanan,pamesanan_id',
-            'mobil_id'             => 'required|exists:mobils,tipemobil_id',
-            'supir_id'             => 'required|exists:sopirs,sopir_id',
+            'pemesanan_id'         => 'required|exists:pemesanan,pemesanan_id',
+            'mobil_id'             => 'required|exists:mobils,mobil_id',
+            'sopir_id'             => 'required|exists:sopirs,sopir_id',
             'tanggal_keberangkatan'=> 'required|date',
             'status_ketersediaan'  => 'required|string',
         ]);
@@ -48,8 +48,8 @@ class KetersediaanController extends Controller
     {
         $pesanan = Pemesanan::all();
         $mobils  = Mobil::all();
-        $supirs  = Sopir::all();
-        return view('ketersediaan.edit', compact('ketersediaan','pesanan','mobils','supirs'));
+        $sopirs  = Sopir::all();
+        return view('ketersediaan.edit', compact('ketersediaan','pesanan','mobils','sopirs'));
     }
 
     public function update(Request $request, Ketersediaan $ketersediaan)

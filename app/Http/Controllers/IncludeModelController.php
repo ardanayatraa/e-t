@@ -27,7 +27,7 @@ class IncludeModelController extends Controller
             'pemesanan_id'       => 'required|exists:pemesanans,pemesanan_id',
             'bensin'             => 'nullable|string|max:225',
             'parkir'             => 'nullable|string|max:225',
-            'supir'              => 'nullable|string|max:225',
+            'sopir'              => 'nullable|string|max:225',
             'makan_siang'        => 'nullable|string|max:225',
             'makan_malam'        => 'nullable|string|max:225',
             'tiket_masuk'        => 'nullable|string|max:225',
@@ -55,7 +55,7 @@ class IncludeModelController extends Controller
         $data = $request->validate([
             'bensin'             => 'nullable|string|max:225',
             'parkir'             => 'nullable|string|max:225',
-            'supir'              => 'nullable|string|max:225',
+            'sopir'              => 'nullable|string|max:225',
             'makan_siang'        => 'nullable|string|max:225',
             'makan_malam'        => 'nullable|string|max:225',
             'tiket_masuk'        => 'nullable|string|max:225',
