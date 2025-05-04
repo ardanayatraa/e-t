@@ -273,10 +273,17 @@
 <body class="bg-gray-50">
     <nav class="bg-white shadow-lg fixed w-full z-10">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            @php
+                $path = public_path('assets/img/baliomtour.png');
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            @endphp
+
             <!-- Logo -->
-            <div class="flex items-center">
-                <span class="font-bold text-xl sm:text-2xl text-teal-600">BALI <span class="text-teal-800">OM
-                        TOURS</span></span>
+            <div class="flex items-center gap-3">
+                <img src="{{ $base64 }}" alt="Logo Bali Om" class="h-10 w-auto">
+
             </div>
 
             <!-- Desktop Menu -->
@@ -676,7 +683,18 @@
         <div class="container mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                 <div class="text-center md:text-left">
-                    <h3 class="text-xl font-bold mb-4 text-teal-400">BALI OM TOURS</h3>
+                    @php
+                        $path = public_path('assets/img/baliomtour.png');
+                        $type = pathinfo($path, PATHINFO_EXTENSION);
+                        $data = file_get_contents($path);
+                        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                    @endphp
+
+                    <!-- Logo -->
+                    <div class="flex items- mb-3 gap-3">
+                        <img src="{{ $base64 }}" alt="Logo Bali Om" class="h-10 w-auto">
+
+                    </div>
                     <p class="text-gray-300 mb-4 text-sm sm:text-base">Menyediakan pengalaman wisata terbaik di Bali
                         dengan pelayanan profesional dan harga terjangkau.</p>
                     <div class="flex space-x-4 justify-center md:justify-start">
@@ -694,11 +712,12 @@
                     <ul class="space-y-2 sm:space-y-3 text-gray-300 text-sm sm:text-base">
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-teal-400"></i>
-                            <span>Jl. Raya Kuta No. 88, Kuta, Bali</span>
+                            <span>Jl. Bisma No. 3 Ubud, Gianyar Bali 80571
+                            </span>
                         </li>
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-teal-400"></i>
-                            <span>+62 812 3456 7890</span>
+                            <span>+62 822 3739 7076 </span>
                         </li>
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-envelope mt-1 mr-3 text-teal-400"></i>
