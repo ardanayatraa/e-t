@@ -319,7 +319,7 @@
             <div id="searchBarContainer" class="max-w-md mx-auto mb-6 sm:mb-8 sticky-search">
                 <div class="relative">
                     <input type="text" id="searchPackage" placeholder="Cari paket wisata..."
-                        class="w-full px-4 py-4 sm:py-3 pl-12 pr-12 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-md">
+                        class="w-full px-4 py-4 sm:py-3 pl-12 pr-12 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fas fa-search text-gray-400 text-lg"></i>
                     </div>
