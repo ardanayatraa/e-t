@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\TransaksiExport;
+use App\Jobs\SendTicketJob;
 use App\Mail\SendTicket;
 use App\Models\Transaksi;
 use App\Models\PaketWisata;
@@ -171,7 +172,7 @@ class TransaksiController extends Controller
             'status_ketersediaan' => true,
         ]);
 
-        Mail::to($transaksi->pelanggan->email)->send(new SendTicket($transaksi));
+        SendTicketJob::dispatch($transaksi);
 
         // 5. Redirect dengan pesan
         return redirect()
