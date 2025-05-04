@@ -21,6 +21,13 @@
             margin: 0 auto;
         }
 
+        .logo {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 60px;
+        }
+
         .header {
             text-align: center;
             margin-bottom: 24px;
@@ -68,7 +75,7 @@
 <body>
     <div class="card">
         <div class="header">
-            <div class="title">Konfirmasi Pembayaran</div>
+            <div class="title">Pengiriman E-Ticket </div>
             <p>Terima kasih telah melakukan pemesanan di <strong>Bali Om Tours</strong>.</p>
         </div>
 

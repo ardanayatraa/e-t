@@ -28,8 +28,15 @@
         }
 
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
             margin-bottom: 0px;
+        }
+
+        .logo {
+            height: 50px;
         }
 
         .header-title {
@@ -157,10 +164,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-title">BALI OM</div>
-            <div class="info">Tourist Information and Travel Agent</div>
-            <div class="info">Jl. Bisma no. 3 Ubud • +62 81936976234 / +62 82237397076</div>
+            <img src="{{ asset('assets/img/baliomtour.png') }}" alt="Logo" class="logo">
+            <div>
+                <div class="header-title">BALI OM TOURS</div>
+                <div class="info">Tourist Information and Travel Agent</div>
+                <div class="info">Jl. Bisma no. 3 Ubud • +62 81936976234 / +62 82237397076</div>
+            </div>
         </div>
+
         <div class="ticket-number">No. <span class="field w-100">#E-{{ $transaksi->transaksi_id }}</span></div>
         <hr>
 

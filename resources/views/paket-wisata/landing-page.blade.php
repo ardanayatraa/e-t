@@ -197,8 +197,13 @@
             top: 70px;
             z-index: 9;
             background-color: white;
-            padding: 12px 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 12px 16px;
+            border-radius: 1rem;
+            /* rounded-2xl */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            /* efek bayangan halus */
+            border: 1px solid #e5e7eb;
+            /* tailwind gray-200 */
         }
 
         /* Vehicle availability styles */
@@ -332,7 +337,7 @@
                 <!-- Filter Indicator -->
                 <div id="filterIndicator" class="hidden mt-2 text-sm text-center">
                     <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full inline-flex items-center">
-                        <span id="resultCount">0</span> paket ditemukan
+                        <span id="resultCount">0</span> - paket ditemukan
                         <button id="clearFilter" class="ml-2 text-teal-600 hover:text-teal-800">
                             <i class="fas fa-times-circle"></i>
                         </button>
@@ -433,11 +438,16 @@
                         class="w-16 sm:w-20 h-1 bg-gradient-to-r from-teal-400 to-teal-600 mx-auto lg:mx-0 mb-4 sm:mb-6 rounded-full">
                     </div>
                     <p class="text-base sm:text-lg text-gray-600 leading-relaxed mb-6 sm:mb-8">
-                        Sejak didirikan pada 2010, kami telah membantu ribuan pelancong menjelajahi keindahan alam dan
-                        budaya Tanah Air.
-                        Dengan jaringan mitra handal di berbagai destinasi, setiap perjalanan dirancang untuk kenyamanan
-                        dan
-                        pengalaman tak terlupakan.
+                        Bali Om Tours was founded by Indah Sari and her partner Arnd in early 2014. The mission of Bali
+                        Om Tours is to share our personal experiences and the places we’ve found on our journey
+                        throughout Indonesia. Here you will get all the necessary information about all your trips
+                        throughout Indonesia without any kind of Pressure to buy.
+
+                        We are proud of our Repeating Customers and the many good Recommendations. Our professional
+                        Staffcrew will guide you with detailed Infos about all the activities and will give you the
+                        choice to decide in an comfortable atmosphere in all our Offices. All Activities sold in our
+                        Offices are permanently checked out about safety and comfortability,so You as our Guest will get
+                        an everlasting positive impression worth to remember.
                     </p>
                     <a href="#paket"
                         class="inline-block bg-gradient-to-r from-teal-500 to-teal-700 text-white font-medium py-3 px-6 sm:py-3 sm:px-8 rounded-lg hover:shadow-lg transition transform hover:-translate-y-1">
