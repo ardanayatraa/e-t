@@ -43,8 +43,8 @@ class IncludeTable extends DataTableComponent
             Column::make('Actions')
                 ->label(fn($row) => view('components.table-action', [
                     'rowId'     => $row->include_id,
-                    'editUrl'   => route('include-model.edit', $row->include_id),
-                    'deleteUrl' => route('include-model.destroy', $row->include_id),
+                    'editUrl'   => route('include.edit', $row->include_id),
+                    'deleteUrl' => route('include.destroy', $row->include_id),
                 ])->render())
                 ->html(),
         ];

@@ -222,16 +222,17 @@
             </div>
         </fieldset>
 
-        <div class="signature-area">
-            <div class="signature-box">
-                <div class="signature-line"></div>
+        <div class="signature-area" style="display: flex; justify-content: space-between; margin-top: 50px;">
+            <div class="signature-box" style="text-align: center; width: 45%;">
+                <div class="signature-line" style="border-top: 1px solid #000; margin-bottom: 5px;"></div>
                 <p>Customer</p>
             </div>
-            <div class="signature-box">
-                <div class="signature-line"></div>
-                <p>Bali Om tourist information</p>
+            <div class="signature-box" style="text-align: center; width: 45%;">
+                <div class="signature-line" style="border-top: 1px solid #000; margin-bottom: 5px;"></div>
+                <p>Bali Om Tourist Information</p>
             </div>
         </div>
+
 
         <div class="footer-note">Cancellation fee 50% from the full amount</div>
     </div>

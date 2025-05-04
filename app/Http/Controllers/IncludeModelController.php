@@ -44,13 +44,14 @@ class IncludeModelController extends Controller
             ->with('success', 'Include data saved.');
     }
 
-    public function edit(IncludeModel $includeModel)
+    public function edit(IncludeModel $include)
     {
+        $includeModel=$include;
         $pemesanan = Pemesanan::all();
         return view('include-model.edit', compact('includeModel','pemesanan'));
     }
 
-    public function update(Request $request, IncludeModel $includeModel)
+    public function update(Request $request, IncludeModel $include)
     {
         $data = $request->validate([
             'bensin'             => 'nullable|string|max:225',
@@ -64,16 +65,16 @@ class IncludeModelController extends Controller
 
         $data['status_ketersediaan'] = $request->has('status_ketersediaan');
 
-        $includeModel->update($data);
+        $include->update($data);
 
         return redirect()
             ->route('include-model.index')
             ->with('success', 'Include data updated.');
     }
 
-    public function destroy(IncludeModel $includeModel)
+    public function destroy(IncludeModel $include)
     {
-        $includeModel->delete();
+        $include->delete();
 
         return redirect()
             ->route('include-model.index')

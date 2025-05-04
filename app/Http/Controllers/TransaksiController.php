@@ -11,6 +11,7 @@ use App\Models\Pemesanan;
 use Illuminate\Http\Request;
 use App\Models\IncludeModel;
 use App\Models\Exclude;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Excel;
 
@@ -202,5 +203,24 @@ class TransaksiController extends Controller
      {
          return Excel::download(new TransaksiExport, 'laporan_transaksi_'.date('Ymd_His').'.xlsx');
      }
+
+     public function dashboard()
+     {
+         $now = Carbon::now();
+
+         $paidThisMonth = \App\Models\Transaksi::where('transaksi_status', 'paid')
+             ->whereMonth('created_at', $now->month)
+             ->whereYear('created_at', $now->year);
+
+         return view('dashboard', [
+             'totalTransaksi' => $paidThisMonth->count(),
+             'totalOmzet'     => $paidThisMonth->sum('total_transaksi') - $paidThisMonth->sum('pay_to_provider'),
+             'totalPelanggan' => \App\Models\Pelanggan::count(),
+             'totalPaket'     => \App\Models\PaketWisata::count(),
+             'totalMobil'     => \App\Models\Mobil::count(),
+             'totalPemesanan' => \App\Models\Pemesanan::count(),
+         ]);
+     }
+
 
 }

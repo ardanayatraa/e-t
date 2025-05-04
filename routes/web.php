@@ -30,9 +30,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [TransaksiController::class, 'dashboard'])
+        ->name('dashboard');
 
         Route::resource('admin',         AdminController::class);
         Route::resource('paket-wisata', PaketWisataController::class)

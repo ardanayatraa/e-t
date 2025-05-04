@@ -1,7 +1,7 @@
 {{-- resources/views/components/table-action.blade.php --}}
 <div class="flex space-x-2">
     @isset($editUrl)
-        <a href="{{ $editUrl }}" class="px-2 py-1 bg-blue-600 hover:bg-blue-700  rounded text-sm transition">
+        <a href="{{ $editUrl }}" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white  rounded text-sm transition">
             Edit
         </a>
     @endisset

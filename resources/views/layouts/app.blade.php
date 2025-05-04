@@ -25,12 +25,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100">
+<body>
     <div class="flex h-screen">
         <!-- Sidebar -->
         <aside class="bg-gray-800 text-white w-64 flex-shrink-0 hidden md:block">
             <div class="p-4 flex items-center border-b border-gray-700">
-                <span class="font-bold text-xl">OM TOURS Panel</span>
+                <span class="font-bold text-xl">BALI OM TOURS</span>
             </div>
             <nav class="mt-4">
                 <div class="px-4 py-2 text-gray-400 text-xs font-semibold">MENU UTAMA</div>
@@ -91,18 +91,18 @@
                     </a>
 
                     {{-- Include --}}
-                    <a href="{{ route('include.index') }}"
+                    {{-- <a href="{{ route('include.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('include.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-plus-square w-6"></i>
                         <span class="ml-2">Include</span>
-                    </a>
+                    </a> --}}
 
                     {{-- Exclude --}}
-                    <a href="{{ route('exclude.index') }}"
+                    {{-- <a href="{{ route('exclude.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('exclude.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-minus-square w-6"></i>
                         <span class="ml-2">Exclude</span>
-                    </a>
+                    </a> --}}
 
                     {{-- Pembayaran (Transaksi) --}}
                     <a href="{{ route('transaksi.index') }}"
@@ -135,7 +135,7 @@
                 <div class="p-4 flex items-center justify-between border-b border-gray-700">
                     <div class="flex items-center">
                         <i class="fas fa-mountain text-teal-400 text-2xl mr-2"></i>
-                        <span class="font-bold text-xl">OM TOURS Panel</span>
+                        <span class="font-bold text-xl">BALI OM TOURS</span>
                     </div>
                     <button id="closeSidebar" class="text-white">
                         <i class="fas fa-times"></i>
@@ -199,18 +199,18 @@
                     </a>
 
                     {{-- Include --}}
-                    <a href="{{ route('include.index') }}"
+                    {{-- <a href="{{ route('include.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('include.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-plus-square w-6"></i>
                         <span class="ml-2">Include</span>
-                    </a>
+                    </a> --}}
 
                     {{-- Exclude --}}
-                    <a href="{{ route('exclude.index') }}"
+                    {{-- <a href="{{ route('exclude.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('exclude.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-minus-square w-6"></i>
                         <span class="ml-2">Exclude</span>
-                    </a>
+                    </a> --}}
 
                     {{-- Pembayaran (Transaksi) --}}
                     <a href="{{ route('transaksi.index') }}"
