@@ -5,6 +5,7 @@ namespace App\Livewire\Table;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Pemesanan;
+use Illuminate\Database\Eloquent\Builder;
 
 class PemesananTable extends DataTableComponent
 {
@@ -14,6 +15,14 @@ class PemesananTable extends DataTableComponent
     {
         $this->setPrimaryKey('pemesanan_id');
     }
+
+    public function builder() :Builder
+    {
+        return Pemesanan::query()
+            ->orderBy('created_at', 'desc');
+    }
+
+
 
     public function columns(): array
     {

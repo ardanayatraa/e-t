@@ -5,6 +5,7 @@ namespace App\Livewire\Table;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Transaksi;
+use Illuminate\Database\Eloquent\Builder;
 
 class TransaksiTable extends DataTableComponent
 {
@@ -14,6 +15,13 @@ class TransaksiTable extends DataTableComponent
     {
         $this->setPrimaryKey('transaksi_id');
     }
+
+        public function builder() :Builder
+    {
+        return Transaksi::query()
+            ->orderBy('created_at', 'desc');
+    }
+
 
     public function columns(): array
     {
