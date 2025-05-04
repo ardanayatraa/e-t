@@ -4,35 +4,44 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\PaketWisata;
+use Illuminate\Support\Carbon;
 
 class PaketWisataSeeder extends Seeder
 {
     public function run()
     {
+        $now = Carbon::now();
+
         $pakets = [
             [
                 'judul'      => 'Ubud surrounding',
                 'tempat'     => 'Elephant cave temple, Tegalalang rice terrace, Tirta empul temple, Gunung kawi temple, Tegenungan waterfall.',
                 'durasi'     => 1,
                 'harga'      => 700000,
-                'foto'       => "",
+                'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Bedugul & waterfall',
                 'tempat'     => 'Banyumala waterfall, Handara gate, Ulundanu bratan temple, Jatiluwih rice terrace.',
                 'durasi'     => 1,
                 'harga'      => 900000,
-                'foto'       => "",
+                'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Bedugul & Tanah Lot sunset',
                 'tempat'     => 'Ulundanu bratan temple, Jatiluwih rice terrace, Tanah lot temple.',
                 'durasi'     => 1,
                 'harga'      => 900000,
-                'foto'       => "",
+                'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Uluwatu tour',
@@ -41,6 +50,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 900000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Lempuyang tour',
@@ -49,6 +60,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 950000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Besakih & waterfall tour',
@@ -57,6 +70,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 900000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Kintamani view tour',
@@ -65,6 +80,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 800000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Art tour',
@@ -73,6 +90,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 700000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'judul'      => 'Spiritual tour',
@@ -81,6 +100,8 @@ class PaketWisataSeeder extends Seeder
                 'harga'      => 850000,
                 'foto'       => '',
                 'deskripsi'  => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         ];
 
