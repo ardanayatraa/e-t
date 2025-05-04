@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,6 +160,164 @@
             margin-top: 10px;
         }
     </style>
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bali OM Tour E-Ticket</title>
+<style>
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
+    body {
+        font-family: sans-serif;
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .container {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+        border: 2px solid #ccc;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        margin-bottom: 0px;
+    }
+
+    .logo {
+        height: 50px;
+    }
+
+    .header-title {
+        font-size: 36px;
+        font-weight: bold;
+        letter-spacing: 4px;
+    }
+
+    .info {
+        font-size: 13px;
+        margin-top: 2px;
+    }
+
+    .ticket-number {
+        text-align: right;
+        font-weight: bold;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid #888;
+        margin-top: -2px;
+        margin-bottom: 15px;
+    }
+
+    .field-table {
+        width: 100%;
+        border-spacing: 0 8px;
+        margin-bottom: 10px;
+    }
+
+    .field-table td {
+        vertical-align: top;
+    }
+
+    .field {
+        border-bottom: 1px solid #666;
+        display: inline-block;
+        height: 16px;
+    }
+
+    .w-60 {
+        width: 60px;
+    }
+
+    .w-100 {
+        width: 100px;
+    }
+
+    .w-150 {
+        width: 150px;
+    }
+
+    .w-200 {
+        width: 200px;
+    }
+
+    .w-300 {
+        width: 300px;
+    }
+
+    .w-350 {
+        width: 350px;
+    }
+
+    .w-450 {
+        width: 450px;
+    }
+
+    .w-700 {
+        width: 700px;
+    }
+
+    fieldset {
+        border: 1px solid #aaa;
+        padding: 10px;
+        margin-top: 15px;
+        page-break-inside: avoid;
+    }
+
+    legend {
+        font-weight: bold;
+        padding: 0 6px;
+    }
+
+    .checkbox-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+    }
+
+    .checkbox-grid label {
+        width: 48%;
+    }
+
+    .signature-area {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .signature-box {
+        text-align: center;
+        width: 45%;
+    }
+
+    .signature-line {
+        border-top: 1px solid #000;
+        width: 200px;
+        margin: 30px auto 8px;
+    }
+
+    .footer-note {
+        font-size: 10px;
+        color: red;
+        font-style: italic;
+        margin-top: 10px;
+    }
+</style>
 </head>
 
 <body>
