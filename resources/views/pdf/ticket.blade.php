@@ -322,7 +322,7 @@
 
 <body>
     <div class="container">
-        <div class="header">
+        <div class="header" style="display: flex; align-items: center; gap: 12px;">
             @php
                 $path = public_path('assets/img/baliomtour.png');
                 $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -331,7 +331,7 @@
             @endphp
 
             <img src="{{ $base64 }}" alt="Logo Bali Om" style="height: 50px;">
-            >
+
             <div>
                 <div class="header-title">BALI OM TOURS</div>
                 <div class="info">Tourist Information and Travel Agent</div>
@@ -400,6 +400,19 @@
             </div>
         </fieldset>
 
+        <div class="signature-area"
+            style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: nowrap; margin-top: 50px; width: 100%;">
+            <div class="signature-box" style="text-align: center; flex: 1;">
+                <div class="signature-line" style="border-top: 1px solid #000; width: 200px; margin: 30px auto 8px;">
+                </div>
+                <p>Customer</p>
+            </div>
+            <div class="signature-box" style="text-align: center; flex: 1;">
+                <div class="signature-line" style="border-top: 1px solid #000; width: 200px; margin: 30px auto 8px;">
+                </div>
+                <p>Bali Om Tourist Information</p>
+            </div>
+        </div>
         <div class="signature-area" style="display: flex; justify-content: space-between; margin-top: 50px;">
             <div class="signature-box" style="text-align: center; width: 45%;">
                 <div class="signature-line" style="border-top: 1px solid #000; margin-bottom: 5px;"></div>
