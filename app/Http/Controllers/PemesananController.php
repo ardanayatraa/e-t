@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mobil;
 use App\Models\Pemesanan;
 use App\Models\Pelanggan;
 use App\Models\PaketWisata;
@@ -98,7 +99,8 @@ class PemesananController extends Controller
     {
         $pelanggan = Pelanggan::all();
         $pakets    = PaketWisata::all();
-        return view('pemesanan.edit', compact('pemesanan','pelanggan','pakets'));
+        $mobils    = Mobil::all();
+        return view('pemesanan.edit', compact('pemesanan','pelanggan','pakets','mobils'));
     }
 
     public function update(Request $request, Pemesanan $pemesanan)

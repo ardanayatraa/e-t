@@ -1,7 +1,7 @@
 {{-- resources/views/pemesanan/create.blade.php --}}
 <x-app-layout>
     <div>
-        <div class="mx-auto sm:px-6 lg:px-8 max-w-3xl">
+        <div class="mx-auto sm:px-6 lg:px-8 w-full">
             {{-- Header --}}
             <div class="mb-4">
                 <h2 class="text-lg font-semibold border py-4 pl-6 pr-8 text-green-800 flex items-center gap-2">

@@ -1,7 +1,7 @@
 {{-- resources/views/pemesanan/edit.blade.php --}}
 <x-app-layout>
     <div>
-        <div class="mx-auto sm:px-6 lg:px-8 max-w-3xl">
+        <div class="mx-auto sm:px-6 lg:px-8w-full">
             {{-- Header --}}
             <div class="mb-4">
                 <h2 class="text-lg font-semibold border py-4 pl-6 pr-8 text-green-800 flex items-center gap-2">
@@ -58,6 +58,7 @@
                             <select id="mobil_id" name="mobil_id" required
                                 class="block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition">
+
                                 @foreach ($mobils as $m)
                                     <option value="{{ $m->mobil_id }}"
                                         {{ old('mobil_id', $pemesanan->mobil_id) == $m->mobil_id ? 'selected' : '' }}>

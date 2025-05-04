@@ -1,7 +1,7 @@
 {{-- resources/views/paket-wisata/edit.blade.php --}}
 <x-app-layout>
     <div class="py-8">
-        <div class="mx-auto sm:px-6 lg:px-8 max-w-3xl">
+        <div class="mx-auto sm:px-6 lg:px-8 w-full">
             {{-- Header --}}
             <div class="mb-4">
                 <h2 class="text-lg font-semibold border-b-2 border-green-300 py-4 pl-6 text-green-800">
