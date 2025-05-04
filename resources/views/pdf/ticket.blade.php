@@ -323,7 +323,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('assets/img/baliomtour.png') }}" alt="Logo" class="logo">
+            @php
+                $path = public_path('assets/img/baliomtour.png');
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            @endphp
+
+            <img src="{{ $base64 }}" alt="Logo Bali Om" style="height: 50px;">
+            >
             <div>
                 <div class="header-title">BALI OM TOURS</div>
                 <div class="info">Tourist Information and Travel Agent</div>
