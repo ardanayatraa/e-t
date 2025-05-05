@@ -215,7 +215,7 @@ class TransaksiController extends Controller
 
          return view('dashboard', [
              'totalTransaksi' => $paidThisMonth->count(),
-             'totalOmzet'     => $paidThisMonth->sum('total_transaksi') - $paidThisMonth->sum('pay_to_provider'),
+             'totalOmzet'     => $paidThisMonth->sum('deposit') - $paidThisMonth->sum('pay_to_provider') +  $paidThisMonth->sum('owe_to_me'),
              'totalPelanggan' => \App\Models\Pelanggan::count(),
              'totalPaket'     => \App\Models\PaketWisata::count(),
              'totalMobil'     => \App\Models\Mobil::count(),
