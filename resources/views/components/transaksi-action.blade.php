@@ -32,7 +32,7 @@
         class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
         onclick="closeModal('confirm-modal-{{ $rowId }}')">
         <div class="modal-dialog bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden
-                w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 max-w-2xl
+                w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto
                 transform scale-75 opacity-0 transition-transform transition-opacity duration-300 ease-out"
             onclick="event.stopPropagation()">
 
@@ -77,8 +77,8 @@
                             class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
                             Deposit
                         </label>
-                        <input id="deposit_{{ $rowId }}" name="deposit" type="number" step="0.01" required
-                            placeholder="500000.00"
+                        <input id="deposit_{{ $rowId }}" name="deposit" type="number" step="1" required
+                            placeholder="500000"
                             class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
                     </div>
 
@@ -89,7 +89,7 @@
                             Pay To Provider
                         </label>
                         <input id="pay_to_provider_{{ $rowId }}" name="pay_to_provider" type="number"
-                            step="0.01" placeholder="80000.00"
+                            step="1" placeholder="80000"
                             class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
                     </div>
 
@@ -99,8 +99,8 @@
                             class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
                             Owe To Me
                         </label>
-                        <input id="owe_to_me_{{ $rowId }}" name="owe_to_me" type="number" step="0.01"
-                            placeholder="150000.00"
+                        <input id="owe_to_me_{{ $rowId }}" name="owe_to_me" type="number" step="1"
+                            placeholder="150000"
                             class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
                     </div>
 

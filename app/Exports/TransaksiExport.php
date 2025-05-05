@@ -77,9 +77,17 @@ class TransaksiExport implements FromCollection, WithMapping, WithHeadings, Shou
                     $sheet->setCellValue("Q{$row}", "=IFERROR(J{$row}-M{$row}+O{$row},0)");
                 }
 
+
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $sheet->setCellValue("K{$row}", "=I{$row}-J{$row}");
+                }
+
+
                 // Baris TOTAL
                 $sheet->setCellValue("H{$totalRow}", 'TOTAL');
                 $sheet->setCellValue("I{$totalRow}", "=SUM(I2:I{$highestRow})");
+                $sheet->setCellValue("K{$totalRow}", "=SUM(K2:K{$highestRow})");
+
                 $sheet->setCellValue("Q{$totalRow}", "=SUM(Q2:Q{$highestRow})");
 
                 $sheet->getStyle("H{$totalRow}:Q{$totalRow}")->applyFromArray([
