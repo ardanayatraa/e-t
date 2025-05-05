@@ -49,7 +49,7 @@ class TransaksiExport implements FromCollection, WithMapping, WithHeadings, Shou
             optional($t->pemesanan)->tanggal_keberangkatan ?? '',
             optional($t->pelanggan)->nama_pemesan ?? '-',
             $t->jumlah_peserta ?? 0,
-            optional($t->paketWisata)->accommodation ?? '-',
+            optional($t->pelanggan)->alamat ?? '-',
             optional($t->pemesanan?->mobil?->sopir)->nama_sopir ?? '-',
             optional($t->paketWisata)->judul ?? '-',
             $t->total_transaksi ?? 0,

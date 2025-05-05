@@ -304,6 +304,17 @@
                 <a href="#beranda" class="text-gray-700 hover:text-teal-600 transition font-medium">Beranda</a>
                 <a href="#paket" class="text-gray-700 hover:text-teal-600 transition font-medium">Paket Wisata</a>
                 <a href="#tentang" class="text-gray-700 hover:text-teal-600 transition font-medium">Tentang Kami</a>
+                {{-- Link Login (buat guest aja) --}}
+                @guest
+
+                    <a href="/login" class="text-gray-700 hover:text-teal-600 transition font-medium">Login</a>
+                @endguest
+
+                {{-- Link Dashboard (buat user yang udah login) --}}
+                @auth
+                    <a href="/dashboard" class="text-gray-700 hover:text-teal-600 transition font-medium">Dahsboard</a>
+                @endauth
+
             </div>
 
             <!-- Mobile Toggle -->
@@ -324,6 +335,19 @@
             <a href="#tentang"
                 class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Tentang
                 Kami</a>
+            {{-- Link Login (buat guest aja) --}}
+            @guest
+                <a href="/login"
+                    class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Login</a>
+            @endguest
+
+            {{-- Link Dashboard (buat user yang udah login) --}}
+            @auth
+                <a href="/login"
+                    class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Dashboard</a>
+            @endauth
+
+
         </div>
     </nav>
 
@@ -408,7 +432,8 @@
                                         <span class="text-xl sm:text-2xl font-bold text-teal-600">
                                             Rp {{ number_format($item->harga, 0, ',', '.') }}
                                         </span>
-                                        <span class="text-xs sm:text-sm text-gray-500">/ {{ $item->durasi }} hari</span>
+                                        <span class="text-xs sm:text-sm text-gray-500">/ {{ $item->durasi }}
+                                            hari</span>
                                     </div>
                                 </div>
 

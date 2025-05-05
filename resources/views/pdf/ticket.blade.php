@@ -192,6 +192,11 @@
                         class="field w-100">{{ $transaksi->balance }}</span></td>
             </tr>
             <tr>
+                <td colspan="2">Accommodation: <span
+                        class="field w-150">{{ $transaksi->pemesanan->pelanggan->alamat ?? '-' }}</span>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2">Pick up time: <span
                         class="field w-150">{{ $transaksi->pemesanan->jam_mulai ?? '-' }}</span></td>
             </tr>
