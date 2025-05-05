@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Columns\SumColumn;
 use Rappasoft\LaravelLivewireTables\Views\Filters\DateFilter as FiltersDateFilter;
 
 class TransaksiLaporanTable extends DataTableComponent
@@ -37,16 +38,26 @@ class TransaksiLaporanTable extends DataTableComponent
             Column::make("Pemesan id",      "pemesan_id")->sortable(),
             Column::make("Pemesanan id",    "pemesanan_id")->sortable(),
             Column::make("Jenis transaksi", "jenis_transaksi")->sortable(),
-            Column::make("Deposit",         "deposit")->sortable(),
-            Column::make("Balance",         "balance")->sortable(),
+            Column::make("Deposit",         "deposit")
+            ->sortable()
+            ->footer(fn($rows) => 'Total: Rp ' . number_format($rows->sum('deposit'),0,',','.')),
+            Column::make("Balance",         "balance")
+            ->sortable()
+            ->footer(fn($rows) => 'Total: Rp ' . number_format($rows->sum('balance'),0,',','.')),
             Column::make("Jumlah peserta",  "jumlah_peserta")->sortable(),
             Column::make("Owe to me",       "owe_to_me")->sortable(),
             Column::make("Pay to provider", "pay_to_provider")->sortable(),
-            Column::make("Total transaksi", "total_transaksi")->sortable(),
+            Column::make("Total transaksi", "total_transaksi")
+            ->sortable()
+            ->footer(fn($rows) => 'Total: Rp ' . number_format($rows->sum('total_transaksi'),0,',','.')),
             Column::make("Status",          "transaksi_status")->sortable(),
+
+
             Column::make("Dibuat pada",     "created_at")
                   ->sortable()
                   ->format(fn($v) => \Carbon\Carbon::parse($v)->format('Y-m-d H:i:s')),
+
+
         ];
     }
 
