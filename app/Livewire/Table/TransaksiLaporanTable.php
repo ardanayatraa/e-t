@@ -34,6 +34,7 @@ class TransaksiLaporanTable extends DataTableComponent
             Column::make('Actions')
             ->label(fn($row) => view('components.transaksi-action', [
                 'rowId'     => $row->transaksi_id,
+                'status'     => $row->transaksi_status,
                 'confirmUrl'   => route('transaksi.confirm', $row->transaksi_id),
             ])->render())
             ->html(),
