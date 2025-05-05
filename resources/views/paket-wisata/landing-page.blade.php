@@ -49,12 +49,25 @@
             .flatpickr-calendar {
                 max-width: 280px;
                 font-size: 13px;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 !important;
+            }
+
+            .flatpickr-days {
+                width: 100% !important;
+            }
+
+            .dayContainer {
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
             }
 
             .flatpickr-day {
-                line-height: 32px !important;
-                height: 32px !important;
-                max-width: 32px !important;
+                max-width: 34px !important;
+                height: 34px !important;
+                line-height: 34px !important;
             }
 
             .flatpickr-time input {
@@ -1016,7 +1029,7 @@
              */
             window.toStep2 = function() {
                 if (!selected.tanggal) return alert('Pilih tanggal dahulu');
-                if (!selected.waktu) return alert('Pilih jam mulai dahulu');
+                if (!selected.waktu) return alert('Pilih armada dahulu');
                 if (!selected.kendaraanId) return alert('Pilih armada dahulu');
 
                 // isi preview teks

@@ -31,13 +31,7 @@ class TransaksiLaporanTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make('Actions')
-            ->label(fn($row) => view('components.transaksi-action', [
-                'rowId'     => $row->transaksi_id,
-                'status'     => $row->transaksi_status,
-                'confirmUrl'   => route('transaksi.confirm', $row->transaksi_id),
-            ])->render())
-            ->html(),
+
             Column::make("Transaksi id",    "transaksi_id")->sortable(),
             Column::make("Paketwisata id",  "paketwisata_id")->sortable(),
             Column::make("Pemesan id",      "pemesan_id")->sortable(),

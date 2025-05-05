@@ -26,6 +26,14 @@ class TransaksiTable extends DataTableComponent
     public function columns(): array
     {
         return [
+
+            Column::make('Actions')
+                ->label(fn($row) => view('components.transaksi-action', [
+                    'rowId'     => $row->transaksi_id,
+                    'confirmUrl'   => route('transaksi.confirm', $row->transaksi_id),
+                    'status'=>$row->transaksi_status
+                ])->render())
+                ->html(),
             Column::make("Transaksi id", "transaksi_id")
                 ->sortable(),
 
@@ -57,13 +65,6 @@ class TransaksiTable extends DataTableComponent
                 ->sortable(),
 
 
-            Column::make('Actions')
-                ->label(fn($row) => view('components.transaksi-action', [
-                    'rowId'     => $row->transaksi_id,
-                    'confirmUrl'   => route('transaksi.confirm', $row->transaksi_id),
-                    'status'=>$row->transaksi_status
-                ])->render())
-                ->html(),
         ];
     }
 }
