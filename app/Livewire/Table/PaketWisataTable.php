@@ -42,8 +42,9 @@ class PaketWisataTable extends DataTableComponent
                 )
                 ->html(),
 
-            Column::make("Harga", "harga")
-                ->sortable(),
+                Column::make("Harga", "harga")
+                ->sortable()
+                ->format(fn($v) => number_format($v, 0, ',', '.')),
 
 
             Column::make('Actions')
