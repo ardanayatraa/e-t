@@ -65,14 +65,27 @@
             }
 
             .flatpickr-day {
-                max-width: 34px !important;
-                height: 34px !important;
-                line-height: 34px !important;
+                max-width: 32px !important;
+                height: 32px !important;
+                line-height: 32px !important;
             }
 
             .flatpickr-time input {
                 font-size: 16px !important;
                 /* Prevent iOS zoom on focus */
+            }
+
+            /* Fix for calendar width on very small screens */
+            @media (max-width: 320px) {
+                .flatpickr-calendar {
+                    max-width: 260px;
+                }
+
+                .flatpickr-day {
+                    max-width: 30px !important;
+                    height: 30px !important;
+                    line-height: 30px !important;
+                }
             }
         }
 

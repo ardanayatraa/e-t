@@ -12,6 +12,12 @@
             Hapus
         </button>
     @endisset
+    @isset($downloadId)
+        <button type="button" wire:click="downloadTicket({{ $downloadId }})"
+            class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition">
+            Download
+        </button>
+    @endisset
 </div>
 
 {{-- Modal Overlay (klik backdrop untuk tutup) --}}

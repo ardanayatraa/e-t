@@ -2,10 +2,12 @@
 
 namespace App\Livewire\Table;
 
+use App\Models\IncludeModel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Ketersediaan;
-
+use App\Models\Transaksi;
+use Barryvdh\DomPDF\Facade\Pdf;
 class KetersediaanTable extends DataTableComponent
 {
     protected $model = Ketersediaan::class;
@@ -34,13 +36,28 @@ class KetersediaanTable extends DataTableComponent
                 ->sortable(),
             Column::make("Updated at", "updated_at")
                 ->sortable(),
+
             Column::make('Actions')
                 ->label(fn($row) => view('components.table-action', [
-                    'rowId'     => $row->terpesan_id,
-                    'editUrl'   => route('ketersediaan.edit', $row->terpesan_id),
+                    'rowId' => $row->terpesan_id,
+                    'editUrl' => route('ketersediaan.edit', $row->terpesan_id),
                     'deleteUrl' => route('ketersediaan.destroy', $row->terpesan_id),
-                ])->render())
+                    'downloadId' => $row->terpesan_id,
+                ]))
                 ->html(),
+
+
         ];
+    }
+
+
+    public function downloadTicket($id)
+    {
+        $ketersediaan = Ketersediaan::with(['transaksi', 'include', 'exclude'])->find($id);
+        $pdf = Pdf::loadView('pdf.ticket-on-admin', ['ketersediaan' => $ketersediaan]);
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'tiket-' . $ketersediaan->terpesan_id . '.pdf');
     }
 }

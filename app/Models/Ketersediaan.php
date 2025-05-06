@@ -24,4 +24,20 @@ class Ketersediaan extends Model
     {
         return $this->belongsTo(Sopir::class, 'sopir_id', 'sopir_id');
     }
+
+    public function transaksi()
+    {
+        return $this->belongsTo(Transaksi::class, 'pemesanan_id', 'pemesanan_id');
+    }
+    public function include()
+    {
+        return $this->belongsTo(IncludeModel::class, 'pemesanan_id', 'pemesanan_id');
+    }
+    public function exclude()
+    {
+        return $this->belongsTo(Exclude::class, 'pemesanan_id', 'pemesanan_id');
+    }
+
+
+
 }
