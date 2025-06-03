@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Table;
 
-use App\Models\IncludeModel;
+use App\Models\Ketersediaan;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
-use App\Models\Ketersediaan;
-use App\Models\Transaksi;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Database\Eloquent\Builder;
+
 class KetersediaanTable extends DataTableComponent
 {
     protected $model = Ketersediaan::class;
@@ -17,39 +17,43 @@ class KetersediaanTable extends DataTableComponent
         $this->setPrimaryKey('terpesan_id');
     }
 
+    public function builder(): Builder
+    {
+        return Ketersediaan::with(['pemesanan.pelanggan', 'mobil', 'sopir']);
+    }
+
     public function columns(): array
     {
         return [
-            Column::make("Terpesan id", "terpesan_id")
-                ->sortable(),
-            Column::make("Pemesanan id", "pemesanan_id")
-                ->sortable(),
-            Column::make("Mobil id", "mobil_id")
-                ->sortable(),
-            Column::make("sopir id", "sopir_id")
-                ->sortable(),
-            Column::make("Tanggal keberangkatan", "tanggal_keberangkatan")
-                ->sortable(),
-            Column::make("Status ketersediaan", "status_ketersediaan")
-                ->sortable(),
-            Column::make("Created at", "created_at")
-                ->sortable(),
-            Column::make("Updated at", "updated_at")
-                ->sortable(),
+            Column::make("Terpesan ID", "terpesan_id")->sortable(),
+
+            Column::make("Pemesan", "pemesanan_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->pemesanan->pelanggan)->nama_pemesan ?? '-'),
+
+            Column::make("Mobil", "mobil_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->mobil)->nama_kendaraan ?? '-'),
+
+            Column::make("Sopir", "sopir_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->sopir)->nama_sopir ?? '-'),
+
+            Column::make("Tanggal Keberangkatan", "tanggal_keberangkatan")->sortable(),
+            // Column::make("Status Ketersediaan", "status_ketersediaan")->sortable(),
+            Column::make("Created At", "created_at")->sortable(),
+            Column::make("Updated At", "updated_at")->sortable(),
 
             Column::make('Actions')
                 ->label(fn($row) => view('components.table-action', [
-                    'rowId' => $row->terpesan_id,
-                    'editUrl' => route('ketersediaan.edit', $row->terpesan_id),
-                    'deleteUrl' => route('ketersediaan.destroy', $row->terpesan_id),
+                    'rowId'      => $row->terpesan_id,
+                    'editUrl'    => route('ketersediaan.edit', $row->terpesan_id),
+                    'deleteUrl'  => route('ketersediaan.destroy', $row->terpesan_id),
                     'downloadId' => $row->terpesan_id,
                 ]))
                 ->html(),
-
-
         ];
     }
-
 
     public function downloadTicket($id)
     {

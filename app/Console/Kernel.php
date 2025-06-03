@@ -13,6 +13,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+
+        $schedule->call(function () {
+        \App\Models\Transaksi::where('transaksi_status', 'pending')
+            ->where('created_at', '<', now()->subHours(4))
+            ->update(['transaksi_status' => 'expired']);
+    })->everyMinute();
     }
 
     /**

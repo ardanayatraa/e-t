@@ -1,4 +1,3 @@
-{{-- resources/views/components/table-action.blade.php --}}
 <div class="flex space-x-2">
     @isset($editUrl)
         <a href="{{ $editUrl }}"
@@ -17,7 +16,6 @@
         </button>
     @endisset
 
-
     @isset($deleteUrl)
         <button type="button" onclick="openModal('delete-modal-{{ $rowId }}')"
             class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition">
@@ -26,17 +24,16 @@
     @endisset
 </div>
 
-{{-- ==== Confirm Payment Modal ==== --}}
-@isset($confirmUrl)
+@if (isset($confirmUrl))
+    {{-- ==== Confirm Payment Modal ==== --}}
     <div id="confirm-modal-{{ $rowId }}"
-        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm overflow-y-auto" style="display: none;">
+        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm overflow-y-auto"
+        style="display: none;">
         <div class="min-h-screen px-4 text-center">
-            <!-- This element centers the modal -->
             <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-
             <div
                 class="modal-dialog inline-block w-full max-w-2xl p-0 my-8 text-left align-middle bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all opacity-0 scale-95">
-                <form action="{{ $confirmUrl }}" method="POST">
+                <form action="{{ $confirmUrl }}" method="POST" autocomplete="off">
                     @csrf
                     @method('PUT')
 
@@ -77,9 +74,22 @@
                                 class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
                                 Deposit
                             </label>
-                            <input id="deposit_{{ $rowId }}" name="deposit" type="number" step="1" required
-                                placeholder="500000"
-                                class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
+                            <input id="deposit_{{ $rowId }}" name="deposit" type="number" step="1"
+                                required placeholder="500000"
+                                class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2"
+                                data-harga="{{ $hargaPaket }}" oninput="updateOweToMe('{{ $rowId }}')">
+                        </div>
+
+                        {{-- Additional Charge --}}
+                        <div>
+                            <label for="additional_charge_{{ $rowId }}"
+                                class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
+                                Additional Charge
+                            </label>
+                            <input id="additional_charge_{{ $rowId }}" name="additional_charge" type="number"
+                                step="1" value="{{ $additionalCharge }}"
+                                class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2"
+                                oninput="updateOweToMe('{{ $rowId }}')">
                         </div>
 
                         {{-- Pay To Provider --}}
@@ -89,8 +99,18 @@
                                 Pay To Provider
                             </label>
                             <input id="pay_to_provider_{{ $rowId }}" name="pay_to_provider" type="number"
-                                step="1" placeholder="80000"
+                                step="1" placeholder="0"
                                 class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
+                        </div>
+
+                        {{-- Harga Paket + Additional Charge (colspan 2) --}}
+                        <div class="md:col-span-2 -mt-2">
+                            <small class="text-gray-500">
+                                Harga Paket + Additional:
+                                Rp<span id="display-total-{{ $rowId }}">
+                                    {{ number_format($hargaPaket + $additionalCharge, 0, ',', '.') }}
+                                </span>
+                            </small>
                         </div>
 
                         {{-- Owe To Me --}}
@@ -100,39 +120,41 @@
                                 Owe To Me
                             </label>
                             <input id="owe_to_me_{{ $rowId }}" name="owe_to_me" type="number" step="1"
-                                placeholder="150000"
-                                class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2">
+                                placeholder="0"
+                                class="w-full border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md shadow-sm p-2 bg-gray-50"
+                                readonly>
                         </div>
+
+                        {{-- Kosongkan 1 kolom agar layout balance --}}
+                        <div></div>
 
                         {{-- Include --}}
                         <fieldset class="md:col-span-2 border border-gray-200 dark:border-gray-700 rounded-md p-4">
-                            <legend class="px-2 text-gray-700 dark:text-gray-300 font-medium">Include</legend>
+                            <legend class="px-2 text-gray-700 dark:text-gray-300 font-medium">
+                                Include (centang yang termasuk paket)
+                            </legend>
                             <div class="grid grid-cols-2 gap-2 mt-2">
                                 @foreach (['bensin', 'parkir', 'sopir', 'makan_siang', 'makan_malam', 'tiket_masuk'] as $f)
+                                    @php
+                                        // Jika sudah ada data di $includeModel, pakai itu.
+                                        $isChecked =
+                                            $include?->$f ??
+                                            // Jika belum ada data, default cek untuk tiga item berikut:
+                                            in_array($f, ['bensin', 'parkir', 'sopir']);
+                                    @endphp
+
                                     <label class="inline-flex items-center space-x-2">
-                                        <input type="checkbox" name="include[{{ $f }}]"
-                                            class="form-checkbox h-5 w-5 text-green-600">
-                                        <span
-                                            class="text-gray-800 dark:text-gray-200">{{ ucwords(str_replace('_', ' ', $f)) }}</span>
+                                        <input type="checkbox" name="include[{{ $f }}]" value="1"
+                                            class="form-checkbox h-5 w-5 text-green-600"
+                                            {{ $isChecked ? 'checked' : '' }}>
+                                        <span class="text-gray-800 dark:text-gray-200">
+                                            {{ ucwords(str_replace('_', ' ', $f)) }}
+                                        </span>
                                     </label>
                                 @endforeach
                             </div>
                         </fieldset>
 
-                        {{-- Exclude --}}
-                        <fieldset class="md:col-span-2 border border-gray-200 dark:border-gray-700 rounded-md p-4">
-                            <legend class="px-2 text-gray-700 dark:text-gray-300 font-medium">Exclude</legend>
-                            <div class="grid grid-cols-2 gap-2 mt-2">
-                                @foreach (['bensin', 'parkir', 'sopir', 'makan_siang', 'makan_malam', 'tiket_masuk'] as $f)
-                                    <label class="inline-flex items-center space-x-2">
-                                        <input type="checkbox" name="exclude[{{ $f }}]"
-                                            class="form-checkbox h-5 w-5 text-red-600">
-                                        <span
-                                            class="text-gray-800 dark:text-gray-200">{{ ucwords(str_replace('_', ' ', $f)) }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        </fieldset>
                     </div>
 
                     {{-- FOOTER --}}
@@ -150,15 +172,15 @@
             </div>
         </div>
     </div>
-@endisset
+@endif
 
-{{-- ==== Delete Modal ==== --}}
-@isset($deleteUrl)
+@if (isset($deleteUrl))
+    {{-- ==== Delete Modal ==== --}}
     <div id="delete-modal-{{ $rowId }}"
-        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm overflow-y-auto" style="display: none;">
+        class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm overflow-y-auto"
+        style="display: none;">
         <div class="min-h-screen px-4 text-center">
             <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-
             <div
                 class="modal-dialog inline-block w-full max-w-md p-6 my-8 text-left align-middle bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all opacity-0 scale-95">
                 <button type="button" onclick="closeModal('delete-modal-{{ $rowId }}')"
@@ -183,21 +205,15 @@
             </div>
         </div>
     </div>
-@endisset
+@endif
 
 {{-- ==== Modal Script ==== --}}
 <script>
     function openModal(id) {
         const modal = document.getElementById(id);
         const dialog = modal.querySelector('.modal-dialog');
-
-        // Show the modal
         modal.style.display = 'block';
-
-        // Prevent body scrolling
         document.body.style.overflow = 'hidden';
-
-        // Animate in
         setTimeout(() => {
             dialog.classList.remove('opacity-0', 'scale-95');
             dialog.classList.add('opacity-100', 'scale-100');
@@ -207,15 +223,28 @@
     function closeModal(id) {
         const modal = document.getElementById(id);
         const dialog = modal.querySelector('.modal-dialog');
-
-        // Animate out
         dialog.classList.remove('opacity-100', 'scale-100');
         dialog.classList.add('opacity-0', 'scale-95');
-
-        // Hide the modal after animation
         setTimeout(() => {
             modal.style.display = 'none';
             document.body.style.overflow = '';
         }, 300);
+    }
+
+    // Auto-calculate owe_to_me and update displayed total
+    function updateOweToMe(rowId) {
+        const depositInput = document.getElementById('deposit_' + rowId);
+        const additionalInput = document.getElementById('additional_charge_' + rowId);
+        const oweInput = document.getElementById('owe_to_me_' + rowId);
+        const displayTotalElement = document.getElementById('display-total-' + rowId);
+
+        const hargaPaket = parseInt(depositInput.getAttribute('data-harga')) || 0;
+        const additional = parseInt(additionalInput.value) || 0;
+        const deposit = parseInt(depositInput.value) || 0;
+        const totalWithAdd = hargaPaket + additional;
+        const oweValue = Math.max(totalWithAdd - deposit, 0);
+
+        displayTotalElement.textContent = totalWithAdd.toLocaleString('id-ID');
+        oweInput.value = oweValue;
     }
 </script>

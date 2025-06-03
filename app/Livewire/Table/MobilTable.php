@@ -5,6 +5,7 @@ namespace App\Livewire\Table;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\Mobil;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 
 class MobilTable extends DataTableComponent
@@ -13,24 +14,36 @@ class MobilTable extends DataTableComponent
 
     public function configure(): void
     {
-        $this->setPrimaryKey('id');
+        $this->setPrimaryKey('mobil_id');
+    }
+
+    public function builder(): Builder
+    {
+        return Mobil::with('sopir');
     }
 
     public function columns(): array
     {
         return [
-            Column::make("Tipemobil id", "mobil_id")
+            Column::make("Tipe Mobil ID", "mobil_id")
                 ->sortable(),
-            Column::make("Sopir id", "sopir_id")
+
+            Column::make("Sopir", "sopir_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->sopir)->nama_sopir ?? '-'),
+
+            Column::make("Nama Kendaraan", "nama_kendaraan")
                 ->sortable(),
-            Column::make("Nama kendaraan", "nama_kendaraan")
+
+            Column::make("Nomor Kendaraan", "nomor_kendaraan")
                 ->sortable(),
-            Column::make("Nomor kendaraan", "nomor_kendaraan")
+
+            Column::make("Jumlah Tempat Duduk", "jumlah_tempat_duduk")
                 ->sortable(),
-            Column::make("Jumlah tempat duduk", "jumlah_tempat_duduk")
+
+            Column::make("Status Ketersediaan", "status_ketersediaan")
                 ->sortable(),
-            Column::make("Status ketersediaan", "status_ketersediaan")
-                ->sortable(),
+
             Column::make("Foto", "foto")
                 ->format(fn($value, $row) =>
                     '<img src="'.Storage::url($value).'" '

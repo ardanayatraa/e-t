@@ -18,32 +18,29 @@ class PemesananTable extends DataTableComponent
 
     public function builder() :Builder
     {
-        return Pemesanan::query()
+        return Pemesanan::with(['pelanggan', 'paketWisata', 'mobil'])
             ->orderBy('created_at', 'desc');
     }
-
-
 
     public function columns(): array
     {
         return [
-            Column::make("pemesanan id", "pemesanan_id")
-                ->sortable(),
+            Column::make("Pemesanan ID", "pemesanan_id")->sortable(),
 
-            Column::make("Pemesan id", "pemesan_id")
-                ->sortable(),
+            Column::make("Pemesan", "pemesan_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->pelanggan)->nama_pemesan ?? '-'),
 
-            Column::make("Paketwisata id", "paketwisata_id")
-                ->sortable(),
+            Column::make("Paket Wisata", "paketwisata_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->paketWisata)->judul ?? '-'),
 
-            Column::make("Tipemobil id", "mobil_id")
-                ->sortable(),
+            Column::make("Mobil", "mobil_id")
+                ->sortable()
+                ->format(fn($v, $row) => optional($row->mobil)->nama_kendaraan ?? '-'),
 
-            Column::make("Jam mulai", "jam_mulai")
-                ->sortable(),
-
-            Column::make("Tanggal keberangkatan", "tanggal_keberangkatan")
-                ->sortable(),
+            Column::make("Jam Mulai", "jam_mulai")->sortable(),
+            Column::make("Tanggal Keberangkatan", "tanggal_keberangkatan")->sortable(),
 
             Column::make('Actions')
                 ->label(fn($row) => view('components.table-action', [

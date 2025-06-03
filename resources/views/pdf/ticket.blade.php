@@ -155,6 +155,13 @@
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+            // Hitung total + additional_charge dan balance
+            $totalRaw = $transaksi->total_transaksi ?? 0;
+            $additional = $transaksi->additional_charge ?? 0;
+            $deposit = $transaksi->deposit ?? 0;
+            $totalWithAdd = $totalRaw + $additional;
+            $balance = max($totalWithAdd - $deposit, 0);
         @endphp
 
         <div class="header-center">
@@ -163,45 +170,84 @@
             <div class="info">Jl. Bisma no. 3 Ubud • +62 81936976234 / +62 82237397076</div>
         </div>
 
-        <div class="ticket-number">No. <span class="field w-100">#E-{{ $transaksi->transaksi_id }}</span></div>
+        <div class="ticket-number">
+            No. <span class="field w-100">#E-{{ $transaksi->transaksi_id }}</span>
+        </div>
         <hr>
 
         <table class="field-table">
             <tr>
-                <td>Name: <span class="field w-350">{{ $transaksi->pemesanan->pelanggan->nama_pemesan ?? '-' }}</span>
+                <td>Name:
+                    <span class="field w-350">
+                        {{ $transaksi->pemesanan->pelanggan->nama_pemesan ?? '-' }}
+                    </span>
                 </td>
-                <td>Phone No.: <span
-                        class="field w-200">{{ $transaksi->pemesanan->pelanggan->nomor_whatsaap ?? '-' }}</span></td>
-            </tr>
-            <tr>
-                <td>Pax: <span class="field w-60">{{ $transaksi->jumlah_peserta }}</span></td>
-                <td>Provider: <span
-                        class="field w-300">{{ $transaksi->pemesanan->mobil->sopir->nama_sopir ?? '-' }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="2">Activity: <span
-                        class="field w-700">{{ $transaksi->paketWisata->judul ?? '-' }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="2">Date Activity: <span
-                        class="field w-200">{{ $transaksi->pemesanan->tanggal_keberangkatan ?? '-' }}</span></td>
-            </tr>
-            <tr>
-                <td>Total Transaction: <span class="field w-100">{{ $transaksi->total_transaksi }}</span></td>
-                <td>Deposit: <span class="field w-100">{{ $transaksi->deposit }}</span> | Balance: <span
-                        class="field w-100">{{ $transaksi->balance }}</span></td>
-            </tr>
-            <tr>
-                <td colspan="2">Accommodation: <span
-                        class="field w-150">{{ $transaksi->pemesanan->pelanggan->alamat ?? '-' }}</span>
+                <td>Phone No.:
+                    <span class="field w-200">
+                        {{ $transaksi->pemesanan->pelanggan->nomor_whatsaap ?? '-' }}
+                    </span>
                 </td>
             </tr>
             <tr>
-                <td colspan="2">Pick up time: <span
-                        class="field w-150">{{ $transaksi->pemesanan->jam_mulai ?? '-' }}</span></td>
+                <td>Pax:
+                    <span class="field w-60">
+                        {{ $transaksi->jumlah_peserta }}
+                    </span>
+                </td>
+                <td>Provider:
+                    <span class="field w-300">
+                        {{ $transaksi->pemesanan->mobil->sopir->nama_sopir ?? '-' }}
+                    </span>
+                </td>
             </tr>
             <tr>
-                <td colspan="2">Other: <span class="field w-700"></span></td>
+                <td colspan="2">Activity:
+                    <span class="field w-700">
+                        {{ $transaksi->paketWisata->judul ?? '-' }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Date Activity:
+                    <span class="field w-200">
+                        {{ $transaksi->pemesanan->tanggal_keberangkatan ?? '-' }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Total Transaction:
+                    <span class="field w-100">
+                        {{ $totalWithAdd }}
+                    </span>
+                </td>
+                <td>Deposit:
+                    <span class="field w-100">
+                        {{ $deposit }}
+                    </span>
+                    | Balance:
+                    <span class="field w-100">
+                        {{ $balance }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Accommodation:
+                    <span class="field w-150">
+                        {{ $transaksi->pemesanan->pelanggan->alamat ?? '-' }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Pick up time:
+                    <span class="field w-150">
+                        {{ $transaksi->pemesanan->jam_mulai ?? '-' }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Other:
+                    <span class="field w-700"></span>
+                </td>
             </tr>
         </table>
 
@@ -209,12 +255,30 @@
             <legend>Include</legend>
             <div class="checkbox-grid">
                 @php $include = $transaksi->includeModel; @endphp
-                <label><input type="checkbox" {{ $include?->bensin ? 'checked' : '' }}> Bensin</label>
-                <label><input type="checkbox" {{ $include?->parkir ? 'checked' : '' }}> Parkir</label>
-                <label><input type="checkbox" {{ $include?->sopir ? 'checked' : '' }}> Supir</label>
-                <label><input type="checkbox" {{ $include?->makan_siang ? 'checked' : '' }}> Makan Siang</label>
-                <label><input type="checkbox" {{ $include?->makan_malam ? 'checked' : '' }}> Makan Malam</label>
-                <label><input type="checkbox" {{ $include?->tiket_masuk ? 'checked' : '' }}> Tiket Masuk</label>
+                <label>
+                    <input type="checkbox" {{ $include?->bensin ? 'checked' : '' }}>
+                    Bensin
+                </label>
+                <label>
+                    <input type="checkbox" {{ $include?->parkir ? 'checked' : '' }}>
+                    Parkir
+                </label>
+                <label>
+                    <input type="checkbox" {{ $include?->sopir ? 'checked' : '' }}>
+                    Supir
+                </label>
+                <label>
+                    <input type="checkbox" {{ $include?->makan_siang ? 'checked' : '' }}>
+                    Makan Siang
+                </label>
+                <label>
+                    <input type="checkbox" {{ $include?->makan_malam ? 'checked' : '' }}>
+                    Makan Malam
+                </label>
+                <label>
+                    <input type="checkbox" {{ $include?->tiket_masuk ? 'checked' : '' }}>
+                    Tiket Masuk
+                </label>
             </div>
         </fieldset>
 
@@ -222,12 +286,30 @@
             <legend>Exclude</legend>
             <div class="checkbox-grid">
                 @php $exclude = $transaksi->exclude; @endphp
-                <label><input type="checkbox" {{ $exclude?->bensin ? 'checked' : '' }}> Bensin</label>
-                <label><input type="checkbox" {{ $exclude?->parkir ? 'checked' : '' }}> Parkir</label>
-                <label><input type="checkbox" {{ $exclude?->sopir ? 'checked' : '' }}> Supir</label>
-                <label><input type="checkbox" {{ $exclude?->makan_siang ? 'checked' : '' }}> Makan Siang</label>
-                <label><input type="checkbox" {{ $exclude?->makan_malam ? 'checked' : '' }}> Makan Malam</label>
-                <label><input type="checkbox" {{ $exclude?->tiket_masuk ? 'checked' : '' }}> Tiket Masuk</label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->bensin ? 'checked' : '' }}>
+                    Bensin
+                </label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->parkir ? 'checked' : '' }}>
+                    Parkir
+                </label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->sopir ? 'checked' : '' }}>
+                    Supir
+                </label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->makan_siang ? 'checked' : '' }}>
+                    Makan Siang
+                </label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->makan_malam ? 'checked' : '' }}>
+                    Makan Malam
+                </label>
+                <label>
+                    <input type="checkbox" {{ $exclude?->tiket_masuk ? 'checked' : '' }}>
+                    Tiket Masuk
+                </label>
             </div>
         </fieldset>
 

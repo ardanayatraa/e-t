@@ -131,50 +131,62 @@ class TransaksiController extends Controller
 
     public function confirmPayment(Request $request, Transaksi $transaksi)
     {
-        // 1. Ambil langsung dari request
-        $jenisPembayaran  = $request->input('jenis_pembayaran');
-        $deposit          = $request->input('deposit', 0);
-        $payToProvider    = $request->input('pay_to_provider', 0);
-        $oweToMe          = $request->input('owe_to_me', 0);
-        $include          = $request->input('include', []);
-        $exclude          = $request->input('exclude', []);
+        // 1. Ambil data dari request
+        $jenisPembayaran   = $request->input('jenis_pembayaran');
+        $deposit           = (float) $request->input('deposit', 0);
+        $additionalCharge  = (float) $request->input('additional_charge', 0);
+        $payToProvider     = (float) $request->input('pay_to_provider', 0);
+        $include           = $request->input('include', []); // array include
 
-        // 2. Update Transaksi
+        // 2. Hitung ulang total_transaksi dan owe_to_me
+        $hargaPaket     = optional($transaksi->paketWisata)->harga ?? 0;
+        $newTotal       = $hargaPaket + $additionalCharge;
+        $oweToMe        = max($newTotal - $deposit, 0);
+
+        // 3. Update kolom transaksi, termasuk total_transaksi dan additional_charge
         $transaksi->update([
-            'jenis_transaksi'  => $jenisPembayaran,
-            'deposit'          => $deposit,
-            'pay_to_provider'  => $payToProvider,
-            'owe_to_me'        => $oweToMe,
-            'transaksi_status' => 'paid',
+            'jenis_transaksi'   => $jenisPembayaran,
+            'deposit'           => $deposit,
+            'additional_charge' => $additionalCharge,
+            'total_transaksi'   => $newTotal,      // perbarui total_transaksi
+            'pay_to_provider'   => $payToProvider,
+            'owe_to_me'         => $oweToMe,
+            'transaksi_status'  => 'paid',
         ]);
 
-        // 3. Simpan IncludeModel
-        IncludeModel::create([
-            'pemesanan_id'        => $transaksi->pemesanan_id,
-            'bensin'              => !empty($include['bensin']),
-            'parkir'              => !empty($include['parkir']),
-            'sopir'               => !empty($include['sopir']),
-            'makan_siang'         => !empty($include['makan_siang']),
-            'makan_malam'         => !empty($include['makan_malam']),
-            'tiket_masuk'         => !empty($include['tiket_masuk']),
-            'status_ketersediaan' => true,
-        ]);
+        // 4. Daftar field include/exclude
+        $fieldList = ['bensin', 'parkir', 'sopir', 'makan_siang', 'makan_malam', 'tiket_masuk'];
 
-        // 4. Simpan Exclude
-        Exclude::create([
-            'pemesanan_id'        => $transaksi->pemesanan_id,
-            'bensin'              => !empty($exclude['bensin']),
-            'parkir'              => !empty($exclude['parkir']),
-            'sopir'               => !empty($exclude['sopir']),
-            'makan_siang'         => !empty($exclude['makan_siang']),
-            'makan_malam'         => !empty($exclude['makan_malam']),
-            'tiket_masuk'         => !empty($exclude['tiket_masuk']),
-            'status_ketersediaan' => true,
-        ]);
+        // 5. Simpan tabel include
+        IncludeModel::create(
+            array_merge(
+                [
+                    'pemesanan_id'        => $transaksi->pemesanan_id,
+                    'status_ketersediaan' => true,
+                ],
+                collect($fieldList)
+                    ->mapWithKeys(fn($f) => [$f => !empty($include[$f])])
+                    ->toArray()
+            )
+        );
 
+        // 6. Simpan tabel exclude
+        Exclude::create(
+            array_merge(
+                [
+                    'pemesanan_id'        => $transaksi->pemesanan_id,
+                    'status_ketersediaan' => true,
+                ],
+                collect($fieldList)
+                    ->mapWithKeys(fn($f) => [$f => empty($include[$f])])
+                    ->toArray()
+            )
+        );
+
+        // 7. (Optional) Kirim tiket
         SendTicketJob::dispatch($transaksi);
 
-        // 5. Redirect dengan pesan
+        // 8. Redirect dengan pesan sukses
         return redirect()
             ->route('transaksi.index')
             ->with('success', 'Pembayaran berhasil dikonfirmasi.');

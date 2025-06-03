@@ -28,7 +28,7 @@ class KetersediaanController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'pemesanan_id'         => 'required|exists:pemesanan,pemesanan_id',
+            'pemesanan_id'         => 'required|exists:pemesanans,pemesanan_id',
             'mobil_id'             => 'required|exists:mobils,mobil_id',
             'sopir_id'             => 'required|exists:sopirs,sopir_id',
             'tanggal_keberangkatan'=> 'required|date',

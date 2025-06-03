@@ -108,7 +108,7 @@
                     <a href="{{ route('transaksi.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-file-invoice-dollar w-6"></i>
-                        <span class="ml-2">Pembayaran</span>
+                        <span class="ml-2">Verifikasi Pembayaran</span>
                     </a>
                 @endif
                 {{-- Laporan Transaksi --}}
@@ -216,7 +216,7 @@
                     <a href="{{ route('transaksi.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-file-invoice-dollar w-6"></i>
-                        <span class="ml-2">Pembayaran</span>
+                        <span class="ml-2">Verifikasi Pembayaran</span>
                     </a>
 
 

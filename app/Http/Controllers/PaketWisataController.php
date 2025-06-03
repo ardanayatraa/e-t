@@ -99,7 +99,6 @@ class PaketWisataController extends Controller
             ->with('success', 'Paket wisata deleted.');
     }
 
-
     public function list()
     {
         $paket = PaketWisata::orderBy('created_at', 'desc')
@@ -109,24 +108,57 @@ class PaketWisataController extends Controller
         return view('paket-wisata.landing-page', compact('paket', 'mobil'));
     }
 
-
     public function check(Request $request)
     {
+        $date = $request->query('date');
+        $currentTime = Carbon::now();
+        $requestDate = Carbon::parse($date);
 
+        // Cek pembatasan waktu booking untuk besok
+        $tomorrow = Carbon::tomorrow();
+        if ($requestDate->isSameDay($tomorrow) && $currentTime->hour >= 17) {
+            // Jika booking untuk besok dan sudah lewat jam 17:00, tidak ada mobil yang tersedia
+            return response()->json([]);
+        }
 
-        $date= $request->query('date');
+        // 1. Mobil taken via ketersediaan (langsung)
+        $takenFromKetersediaan = \App\Models\Ketersediaan::whereDate('tanggal_keberangkatan', $date)
+            ->pluck('mobil_id')
+            ->toArray();
 
+        // 2. Mobil taken via transaksi yang sudah terkonfirmasi (paid/confirmed)
+        $takenFromTransaksiConfirmed = \App\Models\Transaksi::whereHas('pemesanan', function ($q) use ($date) {
+                $q->whereDate('tanggal_keberangkatan', $date);
+            })
+            ->whereIn('transaksi_status', ['paid', 'confirmed']) // Hanya yang sudah terkonfirmasi
+            ->with('pemesanan')
+            ->get()
+            ->pluck('pemesanan.mobil_id')
+            ->toArray();
 
+        // 3. Mobil yang sedang di-hold (pending dalam 4 jam terakhir)
+        $fourHoursAgo = Carbon::now()->subHours(4);
+        $takenFromHold = \App\Models\Transaksi::whereHas('pemesanan', function ($q) use ($date) {
+                $q->whereDate('tanggal_keberangkatan', $date);
+            })
+            ->where('transaksi_status', 'pending') // Status pending (hold)
+            ->where('created_at', '>=', $fourHoursAgo) // Dibuat dalam 4 jam terakhir
+            ->with('pemesanan')
+            ->get()
+            ->pluck('pemesanan.mobil_id')
+            ->toArray();
 
-        // mobil yang sudah terpesan pada tanggal itu
-        $taken = Ketersediaan::whereDate('tanggal_keberangkatan', $date)
-                 ->pluck('mobil_id')
-                 ->toArray();
-        // available = semua mobil kecuali yg di-taken
-        $available = Mobil::whereNotIn('mobil_id', $taken)
-                     ->pluck('mobil_id')
-                     ->toArray();
+        // 4. Gabungkan semua mobil yang tidak tersedia
+        $takenMobilIds = array_unique(array_merge(
+            $takenFromKetersediaan,
+            $takenFromTransaksiConfirmed,
+            $takenFromHold
+        ));
 
-        return response()->json($available);
+        // 5. Ambil mobil yang available (tidak ada di taken)
+        $available = \App\Models\Mobil::whereNotIn('mobil_id', $takenMobilIds)->get();
+
+        // Return hanya ID mobil yang tersedia
+        return response()->json($available->pluck('mobil_id'));
     }
-    }
+}

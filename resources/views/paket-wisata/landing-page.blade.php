@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -72,10 +73,8 @@
 
             .flatpickr-time input {
                 font-size: 16px !important;
-                /* Prevent iOS zoom on focus */
             }
 
-            /* Fix for calendar width on very small screens */
             @media (max-width: 320px) {
                 .flatpickr-calendar {
                     max-width: 260px;
@@ -203,14 +202,12 @@
                 width: 100% !important;
             }
 
-            /* Prevent iOS zoom on input focus */
             input,
             select,
             textarea {
                 font-size: 16px !important;
             }
 
-            /* Improved touch targets */
             .touch-target {
                 min-height: 44px;
                 min-width: 44px;
@@ -225,33 +222,8 @@
             background-color: white;
             padding: 12px 16px;
             border-radius: 1rem;
-            /* rounded-2xl */
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            /* efek bayangan halus */
             border: 1px solid #e5e7eb;
-            /* tailwind gray-200 */
-        }
-
-        /* Vehicle availability styles */
-        .vehicle-unavailable {
-            opacity: 0.5;
-            pointer-events: none;
-            position: relative;
-        }
-
-        .vehicle-unavailable::after {
-            content: 'Tidak Tersedia';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            z-index: 2;
         }
 
         /* Loading indicator */
@@ -292,11 +264,45 @@
             justify-content: center;
             z-index: 10;
         }
+
+        /* Confirmation Modal Styles */
+        .confirmation-modal {
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Participant input validation styles */
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
     </style>
     @livewireStyles
 </head>
 
 <body class="bg-gray-50">
+    <!-- Navigation (unchanged) -->
     <nav class="bg-white shadow-lg fixed w-full z-10">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             @php
@@ -309,7 +315,6 @@
             <!-- Logo -->
             <div class="flex items-center gap-3">
                 <img src="{{ $base64 }}" alt="Logo Bali Om" class="h-10 w-auto">
-
             </div>
 
             <!-- Desktop Menu -->
@@ -317,17 +322,12 @@
                 <a href="#beranda" class="text-gray-700 hover:text-teal-600 transition font-medium">Beranda</a>
                 <a href="#paket" class="text-gray-700 hover:text-teal-600 transition font-medium">Paket Wisata</a>
                 <a href="#tentang" class="text-gray-700 hover:text-teal-600 transition font-medium">Tentang Kami</a>
-                {{-- Link Login (buat guest aja) --}}
                 @guest
-
                     <a href="/login" class="text-gray-700 hover:text-teal-600 transition font-medium">Login</a>
                 @endguest
-
-                {{-- Link Dashboard (buat user yang udah login) --}}
                 @auth
-                    <a href="/dashboard" class="text-gray-700 hover:text-teal-600 transition font-medium">Dahsboard</a>
+                    <a href="/dashboard" class="text-gray-700 hover:text-teal-600 transition font-medium">Dashboard</a>
                 @endauth
-
             </div>
 
             <!-- Mobile Toggle -->
@@ -348,23 +348,18 @@
             <a href="#tentang"
                 class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Tentang
                 Kami</a>
-            {{-- Link Login (buat guest aja) --}}
             @guest
                 <a href="/login"
                     class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Login</a>
             @endguest
-
-            {{-- Link Dashboard (buat user yang udah login) --}}
             @auth
-                <a href="/login"
+                <a href="/dashboard"
                     class="block py-4 px-4 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition">Dashboard</a>
             @endauth
-
-
         </div>
     </nav>
 
-    <!-- Paket Wisata Section -->
+    <!-- Paket Wisata Section (unchanged content, only package cards) -->
     <section id="paket" class="py-16 pt-24 sm:py-24 bg-white">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="text-center mb-6 sm:mb-12">
@@ -433,10 +428,28 @@
                             </h3>
                             <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">
                                 {{ $item->deskripsi }}</p>
-                            <div class="flex items-center mb-4">
+                            <div class="flex items-center mb-2">
                                 <i class="fas fa-map-marker-alt text-teal-600 mr-2"></i>
                                 <span class="text-sm sm:text-base text-gray-600">{{ $item->tempat }}</span>
                             </div>
+
+                            {{-- BADGE INCLUDE --}}
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span
+                                    class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-gas-pump"></i> Bensin
+                                </span>
+                                <span
+                                    class="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-user-tie"></i> Supir
+                                </span>
+                                <span
+                                    class="bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-parking"></i> Parkir
+                                </span>
+                            </div>
+                            {{-- END BADGE INCLUDE --}}
+
                             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mt-4">
                                 {{-- Info Harga --}}
                                 <div class="space-y-1">
@@ -449,14 +462,13 @@
                                             hari</span>
                                     </div>
                                 </div>
-
                                 <button
-                                    onclick="openStep1(
-                                  {{ $item->paketwisata_id }},
-                                  '{{ addslashes($item->judul) }}',
-                                  {{ $item->harga }},
-                                  '{{ $item->foto }}'
-                                )"
+                                    onclick="bukaStep1(
+                  {{ $item->paketwisata_id }},
+                  '{{ addslashes($item->judul) }}',
+                  {{ $item->harga }},
+                  '{{ $item->foto }}'
+                )"
                                     class="w-full sm:w-auto bg-teal-600 hover:bg-teal-500 text-white px-4 py-3 sm:py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 font-medium text-center">
                                     Pilih Paket
                                 </button>
@@ -479,7 +491,7 @@
         </div>
     </section>
 
-    <!-- Tentang Kami Section -->
+    <!-- Tentang Kami Section (unchanged) -->
     <section id="tentang" class="py-12 sm:py-20 bg-gray-50">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
@@ -497,7 +509,7 @@
                     </div>
                     <p class="text-base sm:text-lg text-gray-600 leading-relaxed mb-6 sm:mb-8">
                         Bali Om Tours was founded by Indah Sari and her partner Arnd in early 2014. The mission of Bali
-                        Om Tours is to share our personal experiences and the places we’ve found on our journey
+                        Om Tours is to share our personal experiences and the places we've found on our journey
                         throughout Indonesia. Here you will get all the necessary information about all your trips
                         throughout Indonesia without any kind of Pressure to buy.
 
@@ -516,17 +528,30 @@
         </div>
     </section>
 
-    <div id="pickerContainer"
+    <!-- MODIFIED: Booking Modal with Enhanced Features -->
+    <div id="kontainerPicker"
         class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-start justify-center p-0 z-50 backdrop-blur-sm overflow-y-auto">
         <div
             class="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg md:max-w-4xl my-4 sm:my-8 mx-3 sm:mx-auto animate-fadeIn">
             {{-- STEP 1 --}}
             <div id="step1" class="p-4 sm:p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg sm:text-2xl font-bold text-gray-800">1. Pilih Tanggal & Armada</h4>
-                    <button onclick="closePicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
+                    <h4 class="text-lg sm:text-2xl font-bold text-gray-800">1. Pilih Tanggal & Mobil</h4>
+                    <button onclick="tutupPicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
                         <i class="fas fa-times text-xl"></i>
                     </button>
+                </div>
+
+                <!-- ADDED: Booking Time Restriction Warning -->
+                <div id="peringatanWaktuBooking"
+                    class="hidden mb-4 p-3 bg-orange-100 border border-orange-300 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-orange-600 mr-2"></i>
+                        <span class="text-orange-800 text-sm font-medium">
+                            Booking untuk besok hanya tersedia sampai jam 17:00. Setelah itu semua mobil tidak tersedia
+                            karena kantor tutup jam 21:00.
+                        </span>
+                    </div>
                 </div>
 
                 <div class="flex flex-col lg:flex-row lg:gap-6">
@@ -540,10 +565,10 @@
                                 readonly placeholder="Pilih Tanggal" />
 
                             <!-- Loading indicator for date selection -->
-                            <div id="dateLoadingIndicator" class="hidden mt-2">
+                            <div id="indikatorLoadingTanggal" class="hidden mt-2">
                                 <div class="flex items-center justify-center space-x-2 text-sm text-gray-500">
                                     <div class="loading-spinner"></div>
-                                    <span>Memeriksa ketersediaan...</span>
+                                    <span>Memeriksa ketersediaan mobil...</span>
                                 </div>
                             </div>
                         </div>
@@ -556,25 +581,27 @@
                         </div>
                     </div>
 
-                    {{-- Armada --}}
+                    {{-- Mobil --}}
                     <div class="w-full lg:w-1/2">
                         <div class="flex justify-between items-center mb-3">
-                            <h5 class="font-medium text-gray-700 text-base sm:text-lg">Armada Tersedia</h5>
-
-                            <!-- No vehicles available message -->
-                            <div id="noVehiclesMessage" class="hidden">
-                                <span class="text-sm text-orange-600 font-medium">
-                                    <i class="fas fa-exclamation-circle mr-1"></i> Tidak ada armada tersedia
-                                </span>
-                            </div>
+                            <h5 class="font-medium text-gray-700 text-base sm:text-lg">Mobil Tersedia</h5>
                         </div>
 
-                        <div id="kendaraanList"
+                        <!-- MODIFIED: No vehicles available message -->
+                        <div id="pesanTidakAdaMobil" class="hidden text-center py-8">
+                            <div class="text-gray-500 mb-4">
+                                <i class="fas fa-car text-4xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">Tidak ada mobil yang tersedia</h3>
+                            <p class="text-gray-500 text-sm">Silahkan pilih tanggal lain</p>
+                        </div>
+
+                        <div id="daftarKendaraan"
                             class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 sm:max-h-80 overflow-y-auto pr-2 scrollbar-thin">
                             @foreach ($mobil as $m)
                                 <button type="button" data-tipe="{{ $m->nama_kendaraan }}"
-                                    data-id="{{ $m->mobil_id }}"
-                                    class="kendaraan-btn flex flex-col items-center text-center bg-white p-3 rounded-xl shadow-md
+                                    data-id="{{ $m->mobil_id }}" data-seats="{{ $m->jumlah_tempat_duduk }}"
+                                    class="tombol-kendaraan flex flex-col items-center text-center bg-white p-3 rounded-xl shadow-md
                                     border-2 border-transparent hover:border-teal-400 transition duration-200 hover:shadow-lg">
                                     <div class="w-full h-24 sm:h-28 mb-2 sm:mb-3 overflow-hidden rounded-lg">
                                         <img src="{{ $m->foto ? asset('storage/' . $m->foto) : asset('images/default-car.jpg') }}"
@@ -591,11 +618,11 @@
                     </div>
                 </div>
                 <div class="mt-6 sm:mt-8 flex justify-end space-x-3">
-                    <button onclick="closePicker()"
+                    <button onclick="tutupPicker()"
                         class="px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition font-medium text-sm sm:text-base">
                         Batal
                     </button>
-                    <button id="nextStepBtn" onclick="toStep2()" disabled
+                    <button id="tombolLanjutStep" onclick="keStep2()" disabled
                         class="px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition font-medium text-sm sm:text-base opacity-50 cursor-not-allowed">
                         Input Data Pemesan
                     </button>
@@ -606,13 +633,13 @@
             <div id="step2" class="hidden p-4 sm:p-6 bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="text-lg sm:text-2xl font-bold text-gray-800">2. Lengkapi Data Pemesan</h4>
-                    <button onclick="closePicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
+                    <button onclick="tutupPicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
                 {{-- PREVIEW FOTO --}}
-                <div id="previewFotoWrapper" class="hidden mb-4 sm:mb-6">
+                <div id="wrapperPreviewFoto" class="hidden mb-4 sm:mb-6">
                     <img id="previewFoto" src="/placeholder.svg" alt="Foto Paket"
                         class="w-full h-40 sm:h-48 object-cover rounded-xl shadow-md" />
                 </div>
@@ -645,7 +672,7 @@
                                 </li>
                                 <li class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition">
                                     <i class="fas fa-car-side text-teal-600 w-5 sm:w-6 text-center"></i>
-                                    <span class="ml-2 sm:ml-3 font-medium">Armada:</span>
+                                    <span class="ml-2 sm:ml-3 font-medium">Mobil:</span>
                                     <span id="previewKendaraan"
                                         class="ml-auto font-medium text-gray-800 text-right"></span>
                                 </li>
@@ -701,24 +728,35 @@
                                     placeholder="08xxxxxxxxxx" />
                             </label>
 
+                            <!-- MODIFIED: Enhanced Participant Input with Validation -->
                             <label class="block">
                                 <span class="text-gray-600 font-medium text-sm sm:text-base">Jumlah Peserta</span>
-                                <input id="jumlahPesertaInput" type="text" name="jumlah_peserta" value=""
-                                    inputmode="numeric" pattern="\d*"
-                                    oninput="this.value = this.value.replace(/\D/g, '')" required
-                                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm
-                                    focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm sm:text-base"
-                                    placeholder="Masukkan jumlah peserta" />
+                                <div class="relative">
+                                    <input id="inputJumlahPeserta" type="text" name="jumlah_peserta"
+                                        value="" inputmode="numeric" pattern="\d*"
+                                        oninput="validasiJumlahPeserta(this)" required
+                                        class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm
+                                        focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm sm:text-base"
+                                        placeholder="Masukkan jumlah peserta" />
+                                    <div id="infoPeserta"
+                                        class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+                                        <span class="text-xs text-gray-500">Maks: <span
+                                                id="maksimalPeserta">0</span></span>
+                                    </div>
+                                </div>
+                                <div id="errorPeserta" class="hidden error-message">
+                                    Jumlah peserta tidak boleh melebihi kapasitas mobil
+                                </div>
                             </label>
                         </div>
 
                         {{-- Aksi --}}
                         <div class="flex justify-between mt-4 sm:mt-6">
-                            <button type="button" onclick="backToStep1()"
+                            <button type="button" onclick="kembaliKeStep1()"
                                 class="px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition font-medium text-sm sm:text-base">
                                 <i class="fas fa-arrow-left mr-2"></i> Kembali
                             </button>
-                            <button type="submit"
+                            <button type="button" onclick="tampilkanModalKonfirmasi()" id="tombolKonfirmasiBooking"
                                 class="px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg shadow-md hover:shadow-lg transition font-medium text-sm sm:text-base">
                                 Konfirmasi & Bayar <i class="fas fa-check ml-2"></i>
                             </button>
@@ -729,7 +767,50 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- NEW: Confirmation Modal -->
+    <div id="modalKonfirmasi"
+        class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 confirmation-modal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md modal-content">
+            <div class="p-6 text-center">
+                <!-- Success Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <i class="fas fa-check text-green-600 text-2xl"></i>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Booking Berhasil!</h3>
+
+                <!-- Message -->
+                <div class="text-gray-600 text-sm space-y-3 mb-6">
+                    <p class="font-medium">E-ticket akan didapatkan setelah melakukan pembayaran, segera melakukan
+                        pembayaran di kantor kami, sementara booking Anda akan kami hold selama 4 jam.</p>
+                </div>
+
+                <!-- Important Info -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 text-left">
+                    <h4 class="font-semibold text-blue-800 text-sm mb-2">
+                        <i class="fas fa-info-circle mr-1"></i> Informasi Penting:
+                    </h4>
+                    <ul class="text-blue-700 text-xs space-y-1">
+                        <li>• Untuk booking online besok atau 1 hari setelahnya, customer hanya bisa booking maksimal
+                            jam 17:00</li>
+                        <li>• Jika di atas jam 17:00, semua mobil tidak tersedia karena kantor tutup jam 21:00</li>
+                        <li>• Setiap booking masuk, mobil akan di-hold selama 4 jam dan tidak tersedia di masa holding
+                        </li>
+                        <li>• Jika belum terkonfirmasi dalam 4 jam, mobil akan tersedia lagi</li>
+                    </ul>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="konfirmasiDanSubmit()"
+                    class="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition">
+                    Konfirmasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (unchanged) -->
     <footer class="bg-gray-800 text-white py-8 sm:py-12">
         <div class="container mx-auto px-4 sm:px-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
@@ -742,9 +823,8 @@
                     @endphp
 
                     <!-- Logo -->
-                    <div class="flex items- mb-3 gap-3">
+                    <div class="flex items-center mb-3 gap-3">
                         <img src="{{ $base64 }}" alt="Logo Bali Om" class="h-10 w-auto">
-
                     </div>
                     <p class="text-gray-300 mb-4 text-sm sm:text-base">Menyediakan pengalaman wisata terbaik di Bali
                         dengan pelayanan profesional dan harga terjangkau.</p>
@@ -763,12 +843,11 @@
                     <ul class="space-y-2 sm:space-y-3 text-gray-300 text-sm sm:text-base">
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-teal-400"></i>
-                            <span>Jl. Bisma No. 3 Ubud, Gianyar Bali 80571
-                            </span>
+                            <span>Jl. Bisma No. 3 Ubud, Gianyar Bali 80571</span>
                         </li>
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-teal-400"></i>
-                            <span>+62 822 3739 7076 </span>
+                            <span>+62 822 3739 7076</span>
                         </li>
                         <li class="flex items-start justify-center md:justify-start">
                             <i class="fas fa-envelope mt-1 mr-3 text-teal-400"></i>
@@ -802,6 +881,7 @@
         </div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
         const menuToggle = document.getElementById('menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -814,12 +894,12 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // base URL untuk storage
-            const storageUrl = "{{ asset('storage') }}";
-            const apiUrl = "{{ route('check-availability') }}"; // Endpoint untuk cek ketersediaan
+            // URL dasar untuk storage
+            const urlStorage = "{{ asset('storage') }}";
+            const urlApi = "{{ route('check-availability') }}";
 
-            // state untuk menyimpan pilihan
-            const selected = {
+            // State untuk menyimpan pilihan
+            const terpilih = {
                 paketId: null,
                 paketNama: '',
                 harga: 0,
@@ -829,32 +909,59 @@
                 fotoPath: '',
                 jumlah_peserta: '',
                 waktu: '',
+                maksKursi: 0 // Melacak maksimal kursi untuk kendaraan yang dipilih
             };
 
             // Elemen UI
-            const dateLoadingIndicator = document.getElementById('dateLoadingIndicator');
-            const noVehiclesMessage = document.getElementById('noVehiclesMessage');
-            const nextStepBtn = document.getElementById('nextStepBtn');
-            const kendaraanList = document.getElementById('kendaraanList');
+            const indikatorLoadingTanggal = document.getElementById('indikatorLoadingTanggal');
+            const pesanTidakAdaMobil = document.getElementById('pesanTidakAdaMobil');
+            const tombolLanjutStep = document.getElementById('tombolLanjutStep');
+            const daftarKendaraan = document.getElementById('daftarKendaraan');
+            const peringatanWaktuBooking = document.getElementById('peringatanWaktuBooking');
 
-            // inisialisasi Flatpickr dengan konfigurasi mobile-friendly
-            const isMobile = window.innerWidth < 768;
+            // DIPERBAIKI: Cek apakah booking diizinkan berdasarkan pembatasan waktu
+            function apakahBookingDiizinkan(tanggalTerpilih) {
+                const sekarang = new Date();
+                const terpilih = new Date(tanggalTerpilih);
+                const besok = new Date();
+                besok.setDate(besok.getDate() + 1);
 
-            // Ubah inisialisasi flatpickr untuk tglPicker dengan menambahkan defaultDate: "today"
+                // Jika booking untuk besok dan waktu sekarang sudah lewat jam 17:00
+                if (terpilih.toDateString() === besok.toDateString()) {
+                    const jamSekarang = sekarang.getHours();
+                    if (jamSekarang >= 17) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            // Tampilkan/sembunyikan peringatan waktu booking
+            function perbaruiPeringatanWaktuBooking(tanggalTerpilih) {
+                if (!apakahBookingDiizinkan(tanggalTerpilih)) {
+                    peringatanWaktuBooking.classList.remove('hidden');
+                } else {
+                    peringatanWaktuBooking.classList.add('hidden');
+                }
+            }
+
+            // Inisialisasi Flatpickr dengan bahasa Indonesia
             flatpickr("#tglPicker", {
                 inline: true,
                 locale: "id",
-                dateFormat: "Y-m-d", // Format tanggal untuk API
+                dateFormat: "Y-m-d",
                 minDate: "today",
-                defaultDate: "today", // Set default ke hari ini
+                defaultDate: "today",
                 static: true,
                 onChange: (dates, str) => {
-                    selected.tanggal = str;
-                    checkVehicleAvailability(str);
+                    terpilih.tanggal = str;
+                    perbaruiPeringatanWaktuBooking(str);
+                    cekKetersediaanKendaraan(str);
                 }
             });
 
-            // time picker
+            // Time picker
             flatpickr("#timePicker", {
                 enableTime: true,
                 noCalendar: true,
@@ -862,297 +969,339 @@
                 time_24hr: true,
                 minuteIncrement: 30,
                 onChange: (dates, str) => {
-                    selected.waktu = str;
-                    enableNextStepIfReady();
+                    terpilih.waktu = str;
+                    aktifkanTombolLanjutJikaSiap();
                 }
             });
 
-            const picker = document.getElementById('pickerContainer');
+            const picker = document.getElementById('kontainerPicker');
             const step1 = document.getElementById('step1');
             const step2 = document.getElementById('step2');
 
             /**
-             * Fungsi untuk memeriksa ketersediaan kendaraan berdasarkan tanggal
-             *
-             * @param {string} date - Tanggal dalam format YYYY-MM-DD
-             *
-             * Fungsi ini akan mengirim permintaan ke API untuk mendapatkan daftar kendaraan
-             * yang sudah dibooking pada tanggal tertentu. Kendaraan yang sudah dibooking
-             * akan ditandai sebagai tidak tersedia.
+             * DIPERBAIKI: Fungsi untuk memeriksa ketersediaan kendaraan berdasarkan tanggal
+             * Sekarang API mengembalikan daftar mobil yang TERSEDIA, bukan yang dibooking
              */
-            function checkVehicleAvailability(date) {
-                // Reset state
-                resetVehicleSelection();
+            function cekKetersediaanKendaraan(tanggal) {
+                resetPilihanKendaraan();
+                indikatorLoadingTanggal.classList.remove('hidden');
 
-                // Tampilkan loading indicator
-                dateLoadingIndicator.classList.remove('hidden');
+                // Cek pembatasan waktu terlebih dahulu
+                if (!apakahBookingDiizinkan(tanggal)) {
+                    indikatorLoadingTanggal.classList.add('hidden');
+                    // Sembunyikan semua kendaraan jika booking tidak diizinkan
+                    perbaruiKetersediaanKendaraan([]);
+                    return;
+                }
 
-                // Kirim permintaan ke API untuk memeriksa ketersediaan
-                fetch(`${apiUrl}?date=${date}`)
+                fetch(`${urlApi}?date=${tanggal}`)
                     .then(response => response.json())
                     .then(data => {
-                        // Sembunyikan loading indicator
-                        dateLoadingIndicator.classList.add('hidden');
-
-                        // Proses data ketersediaan
-                        // LOGIKA: Mobil yang terdaftar di booked_vehicles adalah yang TIDAK tersedia
-                        updateVehicleAvailability(data || []);
+                        indikatorLoadingTanggal.classList.add('hidden');
+                        // DIPERBAIKI: Sekarang data berisi ID mobil yang TERSEDIA
+                        perbaruiKetersediaanKendaraan(data || []);
                     })
                     .catch(error => {
-                        console.error('Error checking availability:', error);
-                        dateLoadingIndicator.classList.add('hidden');
-
-                        // Jika terjadi error, gunakan data statis untuk demo
-                        // Dalam implementasi nyata, tampilkan pesan error
-                        useStaticBookedData();
+                        console.error('Error saat mengecek ketersediaan:', error);
+                        indikatorLoadingTanggal.classList.add('hidden');
+                        gunakanDataStatik();
                     });
             }
 
-            /**
-             * Fungsi untuk menggunakan data statis jika API tidak tersedia
-             *
-             * Fungsi ini hanya untuk keperluan demo/testing. Dalam implementasi nyata,
-             * sebaiknya tampilkan pesan error dan minta pengguna untuk mencoba lagi.
-             */
-            function useStaticBookedData() {
-                // Data statis: hanya mobil dengan ID 1 yang sudah dibooking
-                const bookedVehicles = [2]; // Hanya mobil dengan ID 1 yang sudah dibooking
+            // Dapatkan semua ID kendaraan untuk disembunyikan ketika booking tidak diizinkan
+            function dapatkanSemuaIdKendaraan() {
+                const tombolKendaraan = document.querySelectorAll('.tombol-kendaraan');
+                return Array.from(tombolKendaraan).map(btn => parseInt(btn.dataset.id));
+            }
 
-                // Update UI
-                updateVehicleAvailability(bookedVehicles);
+            function gunakanDataStatik() {
+                // Data statis: mobil dengan ID 1 dan 3 yang tersedia
+                const kendaraanTersedia = [1, 3];
+                perbaruiKetersediaanKendaraan(kendaraanTersedia);
             }
 
             /**
-             * Fungsi untuk memperbarui UI berdasarkan ketersediaan kendaraan
-             *
-             * @param {Array} bookedVehicleIds - Array berisi ID kendaraan yang sudah dibooking (tidak tersedia)
-             *
-             * Fungsi ini akan memperbarui tampilan UI untuk menandai kendaraan yang sudah dibooking
-             * sebagai tidak tersedia, dan kendaraan yang belum dibooking sebagai tersedia.
+             * DIPERBAIKI: Fungsi untuk memperbarui ketersediaan kendaraan
+             * Sekarang hanya menampilkan kendaraan yang tersedia, menyembunyikan yang tidak tersedia
              */
-            function updateVehicleAvailability(bookedVehicleIds) {
-                const vehicleButtons = document.querySelectorAll('.kendaraan-btn');
-                let hasAvailableVehicles = false;
+            function perbaruiKetersediaanKendaraan(idKendaraanTersedia) {
+                const tombolKendaraan = document.querySelectorAll('.tombol-kendaraan');
+                let adaKendaraanTersedia = false;
 
-                vehicleButtons.forEach(btn => {
-                    const vehicleId = parseInt(btn.dataset.id);
-                    console.log(bookedVehicleIds.includes(vehicleId));
-                    if (bookedVehicleIds.includes(vehicleId)) {
-                        // Kendaraan tersedia
-                        btn.classList.remove('vehicle-unavailable');
+                tombolKendaraan.forEach(btn => {
+                    const idKendaraan = parseInt(btn.dataset.id);
+
+                    // DIPERBAIKI: Logika kebalikan - tampilkan jika ID ada dalam daftar tersedia
+                    if (idKendaraanTersedia.includes(idKendaraan)) {
+                        // Kendaraan TERSEDIA
+                        btn.style.display = 'flex';
                         btn.disabled = false;
-                        hasAvailableVehicles = true;
+                        adaKendaraanTersedia = true;
                     } else {
-
-                        // Kendaraan TIDAK tersedia (sudah dibooking)
-                        btn.classList.add('vehicle-unavailable');
-                        btn.disabled = true;
+                        // Kendaraan TIDAK tersedia
+                        btn.style.display = 'none';
                     }
                 });
 
-                // Tampilkan pesan jika tidak ada kendaraan yang tersedia
-                if (!hasAvailableVehicles) {
-                    noVehiclesMessage.classList.remove('hidden');
+                // Tampilkan/sembunyikan pesan tidak ada kendaraan dan daftar kendaraan
+                if (!adaKendaraanTersedia) {
+                    pesanTidakAdaMobil.classList.remove('hidden');
+                    daftarKendaraan.classList.add('hidden');
                 } else {
-                    noVehiclesMessage.classList.add('hidden');
+                    pesanTidakAdaMobil.classList.add('hidden');
+                    daftarKendaraan.classList.remove('hidden');
                 }
 
-                // Update state tombol next
-                enableNextStepIfReady();
+                aktifkanTombolLanjutJikaSiap();
             }
 
-            /**
-             * Fungsi untuk mereset pilihan kendaraan
-             *
-             * Fungsi ini akan mereset state pilihan kendaraan dan menghapus
-             * semua penanda ketersediaan dari UI.
-             */
-            function resetVehicleSelection() {
-                selected.kendaraanId = null;
-                selected.kendaraanNama = '';
+            function resetPilihanKendaraan() {
+                terpilih.kendaraanId = null;
+                terpilih.kendaraanNama = '';
+                terpilih.maksKursi = 0;
 
-                document.querySelectorAll('.kendaraan-btn').forEach(btn => {
+                document.querySelectorAll('.tombol-kendaraan').forEach(btn => {
                     btn.classList.remove('border-teal-400');
-                    btn.classList.remove('vehicle-unavailable');
+                    btn.style.display = 'flex';
                     btn.disabled = false;
                 });
 
-                noVehiclesMessage.classList.add('hidden');
-                enableNextStepIfReady();
+                pesanTidakAdaMobil.classList.add('hidden');
+                daftarKendaraan.classList.remove('hidden');
+                aktifkanTombolLanjutJikaSiap();
             }
 
-            /**
-             * Fungsi untuk mengaktifkan/menonaktifkan tombol next
-             *
-             * Tombol next hanya akan aktif jika pengguna sudah memilih tanggal,
-             * waktu, dan kendaraan yang tersedia.
-             */
-            function enableNextStepIfReady() {
-                if (selected.tanggal && selected.waktu && selected.kendaraanId) {
-                    nextStepBtn.disabled = false;
-                    nextStepBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            function aktifkanTombolLanjutJikaSiap() {
+                if (terpilih.tanggal && terpilih.waktu && terpilih.kendaraanId) {
+                    tombolLanjutStep.disabled = false;
+                    tombolLanjutStep.classList.remove('opacity-50', 'cursor-not-allowed');
                 } else {
-                    nextStepBtn.disabled = true;
-                    nextStepBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    tombolLanjutStep.disabled = true;
+                    tombolLanjutStep.classList.add('opacity-50', 'cursor-not-allowed');
                 }
             }
 
-            /**
-             * Fungsi untuk membuka step 1 (pemilihan tanggal dan armada)
-             *
-             * @param {number} id - ID paket wisata
-             * @param {string} nama - Nama paket wisata
-             * @param {number} hr - Harga paket wisata
-             * @param {string} foto - Path foto paket wisata
-             *
-             * Fungsi ini dipanggil ketika pengguna mengklik tombol "Pilih Paket"
-             */
-            window.openStep1 = function(id, nama, hr, foto) {
-                selected.paketId = id;
-                selected.paketNama = nama;
-                selected.harga = hr;
+            // DIPERBAIKI: Fungsi dengan nama Indonesia
+            window.bukaStep1 = function(id, nama, hr, foto) {
+                terpilih.paketId = id;
+                terpilih.paketNama = nama;
+                terpilih.harga = hr;
+                terpilih.fotoPath = foto ? urlStorage + '/' + foto : '';
 
-                // bangun URL lengkap ke storage
-                selected.fotoPath = foto ?
-                    storageUrl + '/' + foto :
-                    '';
+                resetPilihanKendaraan();
 
-                // reset armada
-                selected.kendaraanId = null;
-                selected.kendaraanNama = '';
-                resetVehicleSelection();
+                const hariIni = new Date();
+                const tahun = hariIni.getFullYear();
+                const bulan = String(hariIni.getMonth() + 1).padStart(2, '0');
+                const hari = String(hariIni.getDate()).padStart(2, '0');
+                const tanggalTerformat = `${tahun}-${bulan}-${hari}`;
 
-                // Set tanggal hari ini sebagai default
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                const formattedDate = `${year}-${month}-${day}`;
+                terpilih.tanggal = tanggalTerformat;
+                perbaruiPeringatanWaktuBooking(tanggalTerformat);
 
-                selected.tanggal = formattedDate;
-
-                // Periksa ketersediaan untuk hari ini
                 setTimeout(() => {
-                    checkVehicleAvailability(formattedDate);
+                    cekKetersediaanKendaraan(tanggalTerformat);
                 }, 100);
 
-                // tampilkan step1
                 picker.classList.remove('hidden');
                 step1.classList.remove('hidden');
                 step2.classList.add('hidden');
                 document.body.style.overflow = 'hidden';
             };
 
-            // Event listener untuk tombol kendaraan
-            document.querySelectorAll('.kendaraan-btn').forEach(btn => {
+            // Event listener untuk tombol kendaraan dengan pelacakan kursi yang ditingkatkan
+            document.querySelectorAll('.tombol-kendaraan').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Skip jika kendaraan tidak tersedia
-                    if (btn.classList.contains('vehicle-unavailable')) return;
+                    if (btn.style.display === 'none') return;
 
-                    selected.kendaraanId = btn.dataset.id;
-                    selected.kendaraanNama = btn.dataset.tipe;
+                    terpilih.kendaraanId = btn.dataset.id;
+                    terpilih.kendaraanNama = btn.dataset.tipe;
+                    terpilih.maksKursi = parseInt(btn.dataset.seats);
 
-                    document.querySelectorAll('.kendaraan-btn')
+                    document.querySelectorAll('.tombol-kendaraan')
                         .forEach(b => b.classList.remove('border-teal-400'));
                     btn.classList.add('border-teal-400');
 
-                    enableNextStepIfReady();
+                    aktifkanTombolLanjutJikaSiap();
                 });
             });
 
-            /**
-             * Fungsi untuk melanjutkan ke step 2 (input data pemesan)
-             *
-             * Fungsi ini dipanggil ketika pengguna mengklik tombol "Input Data Pemesan"
-             */
-            window.toStep2 = function() {
-                if (!selected.tanggal) return alert('Pilih tanggal dahulu');
-                if (!selected.waktu) return alert('Pilih armada dahulu');
-                if (!selected.kendaraanId) return alert('Pilih armada dahulu');
+            window.keStep2 = function() {
+                if (!terpilih.tanggal) return alert('Pilih tanggal dahulu');
+                if (!terpilih.waktu) return alert('Pilih mobil dahulu');
+                if (!terpilih.kendaraanId) return alert('Pilih mobil dahulu');
 
-                // isi preview teks
-                document.getElementById('previewPaket').innerText = selected.paketNama;
-                document.getElementById('previewTanggal').innerText = formatDisplayDate(selected.tanggal);
-                document.getElementById('previewWaktu').innerText = selected.waktu;
-                document.getElementById('previewKendaraan').innerText = selected.kendaraanNama;
+                // Isi preview
+                document.getElementById('previewPaket').innerText = terpilih.paketNama;
+                document.getElementById('previewTanggal').innerText = formatTanggalTampilan(terpilih.tanggal);
+                document.getElementById('previewWaktu').innerText = terpilih.waktu;
+                document.getElementById('previewKendaraan').innerText = terpilih.kendaraanNama;
                 document.getElementById('previewHarga').innerText =
                     new Intl.NumberFormat('id-ID', {
                         style: 'currency',
                         currency: 'IDR',
                         minimumFractionDigits: 0
-                    })
-                    .format(selected.harga);
+                    }).format(terpilih.harga);
 
-                // tampilkan foto dengan URL storage
+                // Tampilkan foto
                 const fotoEl = document.getElementById('previewFoto');
-                fotoEl.src = selected.fotoPath || '/placeholder.svg';
-                document.getElementById('previewFotoWrapper').classList.remove('hidden');
+                fotoEl.src = terpilih.fotoPath || '/placeholder.svg';
+                document.getElementById('wrapperPreviewFoto').classList.remove('hidden');
 
-                // isi input tersembunyi
-                document.getElementById('inputPaketId').value = selected.paketId;
-                document.getElementById('inputTanggal').value = selected.tanggal;
-                document.getElementById('inputKendaraan').value = selected.kendaraanNama;
-                document.getElementById('inputMobilId').value = selected.kendaraanId;
-                document.getElementById('inputHarga').value = selected.harga;
-                document.getElementById('inputPeserta').value = selected.jumlah_peserta;
-                document.getElementById('inputWaktu').value = selected.waktu;
+                // Isi input tersembunyi
+                document.getElementById('inputPaketId').value = terpilih.paketId;
+                document.getElementById('inputTanggal').value = terpilih.tanggal;
+                document.getElementById('inputKendaraan').value = terpilih.kendaraanNama;
+                document.getElementById('inputMobilId').value = terpilih.kendaraanId;
+                document.getElementById('inputHarga').value = terpilih.harga;
+                document.getElementById('inputPeserta').value = terpilih.jumlah_peserta;
+                document.getElementById('inputWaktu').value = terpilih.waktu;
 
-                // scroll to top for mobile
+                // Perbarui input peserta dengan informasi batas kursi
+                perbaruiInputPeserta();
+
                 if (window.innerWidth < 768) {
                     window.scrollTo(0, 0);
                 }
 
-                // pindah step
                 step1.classList.add('hidden');
                 step2.classList.remove('hidden');
             };
 
-            /**
-             * Fungsi untuk memformat tanggal untuk tampilan
-             *
-             * @param {string} dateStr - Tanggal dalam format YYYY-MM-DD
-             * @returns {string} - Tanggal dalam format DD-MM-YYYY
-             */
-            function formatDisplayDate(dateStr) {
-                // Convert YYYY-MM-DD to DD-MM-YYYY for display
-                if (!dateStr) return '';
+            // Perbarui input peserta dengan informasi batas kursi
+            function perbaruiInputPeserta() {
+                const infoPeserta = document.getElementById('infoPeserta');
+                const maksimalPeserta = document.getElementById('maksimalPeserta');
 
-                const parts = dateStr.split('-');
-                if (parts.length !== 3) return dateStr;
-
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                if (terpilih.maksKursi > 0) {
+                    maksimalPeserta.textContent = terpilih.maksKursi;
+                    infoPeserta.classList.remove('hidden');
+                } else {
+                    infoPeserta.classList.add('hidden');
+                }
             }
 
-            /**
-             * Fungsi untuk kembali ke step 1
-             *
-             * Fungsi ini dipanggil ketika pengguna mengklik tombol "Kembali"
-             */
-            window.backToStep1 = function() {
+            // DIPERBAIKI: Validasi jumlah peserta dengan nama Indonesia
+            window.validasiJumlahPeserta = function(input) {
+                // Hapus karakter non-numerik
+                input.value = input.value.replace(/\D/g, '');
+
+                const jumlah = parseInt(input.value) || 0;
+                const divError = document.getElementById('errorPeserta');
+
+                if (jumlah > terpilih.maksKursi && terpilih.maksKursi > 0) {
+                    input.classList.add('input-error');
+                    divError.classList.remove('hidden');
+                    divError.textContent =
+                        `Jumlah peserta tidak boleh melebihi ${terpilih.maksKursi} orang (kapasitas mobil)`;
+
+                    // Nonaktifkan tombol submit
+                    document.getElementById('tombolKonfirmasiBooking').disabled = true;
+                    document.getElementById('tombolKonfirmasiBooking').classList.add('opacity-50',
+                        'cursor-not-allowed');
+                } else {
+                    input.classList.remove('input-error');
+                    divError.classList.add('hidden');
+
+                    // Aktifkan tombol submit
+                    document.getElementById('tombolKonfirmasiBooking').disabled = false;
+                    document.getElementById('tombolKonfirmasiBooking').classList.remove('opacity-50',
+                        'cursor-not-allowed');
+                }
+
+                terpilih.jumlah_peserta = input.value;
+            };
+
+            function formatTanggalTampilan(strTanggal) {
+                if (!strTanggal) return '';
+
+                const bagian = strTanggal.split('-');
+                if (bagian.length !== 3) return strTanggal;
+
+                return `${bagian[2]}-${bagian[1]}-${bagian[0]}`;
+            }
+
+            window.kembaliKeStep1 = function() {
                 step2.classList.add('hidden');
                 step1.classList.remove('hidden');
 
-                // scroll to top for mobile
                 if (window.innerWidth < 768) {
                     window.scrollTo(0, 0);
                 }
             };
 
-            /**
-             * Fungsi untuk menutup modal picker
-             *
-             * Fungsi ini dipanggil ketika pengguna mengklik tombol "Batal" atau "X"
-             */
-            window.closePicker = function() {
+            window.tutupPicker = function() {
                 picker.classList.add('hidden');
                 document.body.style.overflow = 'auto';
             };
 
-            // Handle resize for responsive calendar
+            // Tampilkan modal konfirmasi setelah booking berhasil
+            window.tampilkanModalKonfirmasi = function() {
+                document.getElementById('modalKonfirmasi').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Tutup modal konfirmasi
+            window.tutupModalKonfirmasi = function() {
+                document.getElementById('modalKonfirmasi').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+
+                // Tutup juga picker booking
+                tutupPicker();
+
+                // Reset form
+                resetFormBooking();
+            };
+
+            // Reset form booking
+            function resetFormBooking() {
+                // Reset state terpilih
+                terpilih.paketId = null;
+                terpilih.paketNama = '';
+                terpilih.harga = 0;
+                terpilih.tanggal = '';
+                terpilih.kendaraanNama = '';
+                terpilih.kendaraanId = null;
+                terpilih.fotoPath = '';
+                terpilih.jumlah_peserta = '';
+                terpilih.waktu = '';
+                terpilih.maksKursi = 0;
+
+                // Reset input form
+                document.querySelector('form').reset();
+
+                // Reset validasi peserta
+                const inputPeserta = document.getElementById('inputJumlahPeserta');
+                const divError = document.getElementById('errorPeserta');
+                inputPeserta.classList.remove('input-error');
+                divError.classList.add('hidden');
+
+                // Reset pilihan kendaraan
+                resetPilihanKendaraan();
+            }
+
+            // Konfirmasi dan submit form
+            window.konfirmasiDanSubmit = function() {
+                // Validasi sekali lagi sebelum submit
+                const jumlahPeserta = parseInt(document.getElementById('inputJumlahPeserta').value) || 0;
+                if (jumlahPeserta > terpilih.maksKursi && terpilih.maksKursi > 0) {
+                    alert(`Jumlah peserta tidak boleh melebihi ${terpilih.maksKursi} orang`);
+                    return;
+                }
+
+                // Submit form
+                document.querySelector('form').submit();
+            };
+
+            document.querySelector('form').addEventListener('submit', function(e) {
+                // Biarkan form submit normal tanpa validasi tambahan
+                // karena validasi sudah dilakukan di konfirmasiDanSubmit()
+            });
+
+            // Handle resize untuk kalender responsif
             window.addEventListener('resize', () => {
                 if (document.querySelector('.flatpickr-calendar')) {
-                    // Force flatpickr to redraw
-                    const currentDate = flatpickr("#tglPicker").selectedDates[0];
+                    const tanggalSekarang = flatpickr("#tglPicker").selectedDates[0];
                     flatpickr("#tglPicker").destroy();
 
                     flatpickr("#tglPicker", {
@@ -1160,85 +1309,69 @@
                         locale: "id",
                         dateFormat: "Y-m-d",
                         minDate: "today",
-                        defaultDate: currentDate,
+                        defaultDate: tanggalSekarang,
                         static: true,
                         onChange: (dates, str) => {
-                            selected.tanggal = str;
-                            checkVehicleAvailability(str);
+                            terpilih.tanggal = str;
+                            perbaruiPeringatanWaktuBooking(str);
+                            cekKetersediaanKendaraan(str);
                         }
                     });
                 }
 
-                // Update pagination display based on screen size
-                updatePaginationDisplay();
+                perbaruiTampilanPaginasi();
             });
 
-            // Pagination and Search functionality
-            const packagesPerPage = 6;
-            const packageContainer = document.getElementById('packageContainer');
-            const paginationContainer = document.getElementById('pagination');
-            const paginationInfo = document.getElementById('paginationInfo');
-            const currentPageInfo = document.getElementById('currentPageInfo');
-            const totalPagesInfo = document.getElementById('totalPagesInfo');
-            const searchInput = document.getElementById('searchPackage');
-            const clearSearchBtn = document.getElementById('clearSearch');
-            const noResultsMsg = document.getElementById('noResults');
-            const resetSearchBtn = document.getElementById('resetSearch');
-            const filterIndicator = document.getElementById('filterIndicator');
-            const resultCount = document.getElementById('resultCount');
-            const clearFilterBtn = document.getElementById('clearFilter');
+            // Fungsi pagination dan pencarian (tidak berubah)
+            const paketPerHalaman = 6;
+            const kontainerPaket = document.getElementById('packageContainer');
+            const kontainerPaginasi = document.getElementById('pagination');
+            const infoPaginasi = document.getElementById('paginationInfo');
+            const infoHalamanSekarang = document.getElementById('currentPageInfo');
+            const infoTotalHalaman = document.getElementById('totalPagesInfo');
+            const inputPencarian = document.getElementById('searchPackage');
+            const tombolHapusPencarian = document.getElementById('clearSearch');
+            const pesanTidakAdaHasil = document.getElementById('noResults');
+            const tombolResetPencarian = document.getElementById('resetSearch');
+            const indikatorFilter = document.getElementById('filterIndicator');
+            const jumlahHasil = document.getElementById('resultCount');
+            const tombolHapusFilter = document.getElementById('clearFilter');
 
-            // Get all package cards
-            const allPackages = Array.from(packageContainer.querySelectorAll('.package-card'));
-            let filteredPackages = [...allPackages];
-            let currentPage = 1;
+            const semuaPaket = Array.from(kontainerPaket.querySelectorAll('.package-card'));
+            let paketTerfilter = [...semuaPaket];
+            let halamanSekarang = 1;
 
-            /**
-             * Fungsi untuk memperbarui tampilan pagination berdasarkan ukuran layar
-             *
-             * Pada layar kecil, pagination akan ditampilkan dalam format yang lebih compact
-             */
-            function updatePaginationDisplay() {
-                const isMobileView = window.innerWidth < 480;
+            function perbaruiTampilanPaginasi() {
+                const tampilMobile = window.innerWidth < 480;
 
-                if (isMobileView) {
-                    paginationContainer.classList.add('pagination-compact');
-                    paginationInfo.classList.remove('hidden');
+                if (tampilMobile) {
+                    kontainerPaginasi.classList.add('pagination-compact');
+                    infoPaginasi.classList.remove('hidden');
                 } else {
-                    paginationContainer.classList.remove('pagination-compact');
-                    paginationInfo.classList.add('hidden');
+                    kontainerPaginasi.classList.remove('pagination-compact');
+                    infoPaginasi.classList.add('hidden');
                 }
             }
 
-            /**
-             * Fungsi untuk menginisialisasi pagination
-             *
-             * Fungsi ini akan membuat tombol-tombol pagination berdasarkan jumlah halaman
-             */
-            function initPagination() {
-                // Clear pagination container
-                paginationContainer.innerHTML = '';
+            function inisialisasiPaginasi() {
+                kontainerPaginasi.innerHTML = '';
 
-                // Calculate total pages
-                const totalPages = Math.ceil(filteredPackages.length / packagesPerPage);
+                const totalHalaman = Math.ceil(paketTerfilter.length / paketPerHalaman);
 
-                // Update pagination info for mobile
-                currentPageInfo.textContent = currentPage;
-                totalPagesInfo.textContent = totalPages;
+                infoHalamanSekarang.textContent = halamanSekarang;
+                infoTotalHalaman.textContent = totalHalaman;
 
-                // Create previous button
-                if (totalPages > 1) {
-                    const prevBtn = document.createElement('button');
-                    prevBtn.className =
+                if (totalHalaman > 1) {
+                    const tombolSebelum = document.createElement('button');
+                    tombolSebelum.className =
                         'pagination-btn px-3 py-3 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 touch-target';
-                    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-                    prevBtn.disabled = currentPage === 1;
-                    prevBtn.style.opacity = currentPage === 1 ? '0.5' : '1';
-                    prevBtn.addEventListener('click', () => {
-                        if (currentPage > 1) {
-                            currentPage--;
-                            renderPackages();
-                            // Scroll to top of packages section on mobile
+                    tombolSebelum.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                    tombolSebelum.disabled = halamanSekarang === 1;
+                    tombolSebelum.style.opacity = halamanSekarang === 1 ? '0.5' : '1';
+                    tombolSebelum.addEventListener('click', () => {
+                        if (halamanSekarang > 1) {
+                            halamanSekarang--;
+                            renderPaket();
                             if (window.innerWidth < 768) {
                                 document.getElementById('searchBarContainer').scrollIntoView({
                                     behavior: 'smooth'
@@ -1246,39 +1379,35 @@
                             }
                         }
                     });
-                    paginationContainer.appendChild(prevBtn);
+                    kontainerPaginasi.appendChild(tombolSebelum);
 
-                    // Create page buttons
-                    for (let i = 1; i <= totalPages; i++) {
-                        const pageBtn = document.createElement('button');
-                        pageBtn.className =
-                            `pagination-btn pagination-number px-3 py-3 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 touch-target ${currentPage === i ? 'active pagination-current' : ''}`;
-                        pageBtn.textContent = i;
-                        pageBtn.addEventListener('click', () => {
-                            currentPage = i;
-                            renderPackages();
-                            // Scroll to top of packages section on mobile
+                    for (let i = 1; i <= totalHalaman; i++) {
+                        const tombolHalaman = document.createElement('button');
+                        tombolHalaman.className =
+                            `pagination-btn pagination-number px-3 py-3 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 touch-target ${halamanSekarang === i ? 'active pagination-current' : ''}`;
+                        tombolHalaman.textContent = i;
+                        tombolHalaman.addEventListener('click', () => {
+                            halamanSekarang = i;
+                            renderPaket();
                             if (window.innerWidth < 768) {
                                 document.getElementById('searchBarContainer').scrollIntoView({
                                     behavior: 'smooth'
                                 });
                             }
                         });
-                        paginationContainer.appendChild(pageBtn);
+                        kontainerPaginasi.appendChild(tombolHalaman);
                     }
 
-                    // Create next button
-                    const nextBtn = document.createElement('button');
-                    nextBtn.className =
+                    const tombolSelanjutnya = document.createElement('button');
+                    tombolSelanjutnya.className =
                         'pagination-btn px-3 py-3 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 touch-target';
-                    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-                    nextBtn.disabled = currentPage === totalPages;
-                    nextBtn.style.opacity = currentPage === totalPages ? '0.5' : '1';
-                    nextBtn.addEventListener('click', () => {
-                        if (currentPage < totalPages) {
-                            currentPage++;
-                            renderPackages();
-                            // Scroll to top of packages section on mobile
+                    tombolSelanjutnya.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                    tombolSelanjutnya.disabled = halamanSekarang === totalHalaman;
+                    tombolSelanjutnya.style.opacity = halamanSekarang === totalHalaman ? '0.5' : '1';
+                    tombolSelanjutnya.addEventListener('click', () => {
+                        if (halamanSekarang < totalHalaman) {
+                            halamanSekarang++;
+                            renderPaket();
                             if (window.innerWidth < 768) {
                                 document.getElementById('searchBarContainer').scrollIntoView({
                                     behavior: 'smooth'
@@ -1286,87 +1415,65 @@
                             }
                         }
                     });
-                    paginationContainer.appendChild(nextBtn);
+                    kontainerPaginasi.appendChild(tombolSelanjutnya);
                 }
             }
 
-            /**
-             * Fungsi untuk menampilkan paket wisata berdasarkan halaman saat ini
-             *
-             * Fungsi ini akan menampilkan paket wisata sesuai dengan halaman yang dipilih
-             * dan menyembunyikan paket wisata yang tidak berada di halaman tersebut.
-             */
-            function renderPackages() {
-                // Hide all packages
-                allPackages.forEach(pkg => {
+            function renderPaket() {
+                semuaPaket.forEach(pkg => {
                     pkg.classList.add('hidden');
                 });
 
-                // Show no results message if needed
-                if (filteredPackages.length === 0) {
-                    noResultsMsg.classList.remove('hidden');
-                    paginationContainer.classList.add('hidden');
-                    paginationInfo.classList.add('hidden');
+                if (paketTerfilter.length === 0) {
+                    pesanTidakAdaHasil.classList.remove('hidden');
+                    kontainerPaginasi.classList.add('hidden');
+                    infoPaginasi.classList.add('hidden');
 
-                    // Show filter indicator with count
-                    if (searchInput.value.trim() !== '') {
-                        filterIndicator.classList.remove('hidden');
-                        resultCount.textContent = '0';
+                    if (inputPencarian.value.trim() !== '') {
+                        indikatorFilter.classList.remove('hidden');
+                        jumlahHasil.textContent = '0';
                     } else {
-                        filterIndicator.classList.add('hidden');
+                        indikatorFilter.classList.add('hidden');
                     }
                 } else {
-                    noResultsMsg.classList.add('hidden');
-                    paginationContainer.classList.remove('hidden');
+                    pesanTidakAdaHasil.classList.add('hidden');
+                    kontainerPaginasi.classList.remove('hidden');
 
-                    // Show filter indicator with count if searching
-                    if (searchInput.value.trim() !== '') {
-                        filterIndicator.classList.remove('hidden');
-                        resultCount.textContent = filteredPackages.length;
+                    if (inputPencarian.value.trim() !== '') {
+                        indikatorFilter.classList.remove('hidden');
+                        jumlahHasil.textContent = paketTerfilter.length;
                     } else {
-                        filterIndicator.classList.add('hidden');
+                        indikatorFilter.classList.add('hidden');
                     }
 
-                    // Calculate start and end index
-                    const startIndex = (currentPage - 1) * packagesPerPage;
-                    const endIndex = Math.min(startIndex + packagesPerPage, filteredPackages.length);
+                    const indeksAwal = (halamanSekarang - 1) * paketPerHalaman;
+                    const indeksAkhir = Math.min(indeksAwal + paketPerHalaman, paketTerfilter.length);
 
-                    // Show packages for current page
-                    for (let i = startIndex; i < endIndex; i++) {
-                        filteredPackages[i].classList.remove('hidden');
+                    for (let i = indeksAwal; i < indeksAkhir; i++) {
+                        paketTerfilter[i].classList.remove('hidden');
                     }
 
-                    // Update pagination
-                    initPagination();
-                    updatePaginationDisplay();
+                    inisialisasiPaginasi();
+                    perbaruiTampilanPaginasi();
                 }
             }
 
-            /**
-             * Fungsi untuk memfilter paket wisata berdasarkan kata kunci pencarian
-             *
-             * @param {string} searchTerm - Kata kunci pencarian
-             *
-             * Fungsi ini akan memfilter paket wisata berdasarkan nama dan lokasi
-             * yang cocok dengan kata kunci pencarian.
-             */
-            function filterPackages(searchTerm) {
-                searchTerm = searchTerm.toLowerCase().trim();
+            function filterPaket(kataPencarian) {
+                kataPencarian = kataPencarian.toLowerCase().trim();
 
-                if (searchTerm === '') {
-                    filteredPackages = [...allPackages];
-                    clearSearchBtn.classList.add('hidden');
-                    filterIndicator.classList.add('hidden');
+                if (kataPencarian === '') {
+                    paketTerfilter = [...semuaPaket];
+                    tombolHapusPencarian.classList.add('hidden');
+                    indikatorFilter.classList.add('hidden');
                 } else {
-                    clearSearchBtn.classList.remove('hidden');
-                    filteredPackages = allPackages.filter(pkg => {
-                        const name = pkg.dataset.name || '';
-                        const location = pkg.dataset.location || '';
-                        return name.includes(searchTerm) || location.includes(searchTerm);
+                    tombolHapusPencarian.classList.remove('hidden');
+                    paketTerfilter = semuaPaket.filter(pkg => {
+                        const nama = pkg.dataset.name || '';
+                        const lokasi = pkg.dataset.location || '';
+                        return nama.includes(kataPencarian) || lokasi.includes(kataPencarian);
                     });
 
-                    // Highlight matching packages
-                    filteredPackages.forEach(pkg => {
+                    paketTerfilter.forEach(pkg => {
                         pkg.classList.add('highlight-search');
                         setTimeout(() => {
                             pkg.classList.remove('highlight-search');
@@ -1374,42 +1481,36 @@
                     });
                 }
 
-                // Reset to first page and render
-                currentPage = 1;
-                renderPackages();
+                halamanSekarang = 1;
+                renderPaket();
             }
 
-            // Search input event with debounce for better mobile performance
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    filterPackages(e.target.value);
-                }, 300); // 300ms debounce
+            let timeoutPencarian;
+            inputPencarian.addEventListener('input', (e) => {
+                clearTimeout(timeoutPencarian);
+                timeoutPencarian = setTimeout(() => {
+                    filterPaket(e.target.value);
+                }, 300);
             });
 
-            // Clear search button
-            clearSearchBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                filterPackages('');
-                searchInput.focus();
+            tombolHapusPencarian.addEventListener('click', () => {
+                inputPencarian.value = '';
+                filterPaket('');
+                inputPencarian.focus();
             });
 
-            // Reset search button in no results message
-            resetSearchBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                filterPackages('');
-                searchInput.focus();
+            tombolResetPencarian.addEventListener('click', () => {
+                inputPencarian.value = '';
+                filterPaket('');
+                inputPencarian.focus();
             });
 
-            // Clear filter button in filter indicator
-            clearFilterBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                filterPackages('');
-                searchInput.focus();
+            tombolHapusFilter.addEventListener('click', () => {
+                inputPencarian.value = '';
+                filterPaket('');
+                inputPencarian.focus();
             });
 
-            // Pull-to-refresh simulation for mobile
             let touchStartY = 0;
             document.addEventListener('touchstart', (e) => {
                 touchStartY = e.touches[0].clientY;
@@ -1421,15 +1522,13 @@
                 const touchY = e.touches[0].clientY;
                 const scrollTop = window.scrollY;
 
-                // If we're at the top of the page and pulling down
                 if (scrollTop <= 0 && touchY - touchStartY > 50) {
-                    packageContainer.classList.add('pull-refresh');
+                    kontainerPaket.classList.add('pull-refresh');
                     setTimeout(() => {
-                        packageContainer.classList.remove('pull-refresh');
-                        // Reset search and refresh packages
-                        if (searchInput.value.trim() !== '') {
-                            searchInput.value = '';
-                            filterPackages('');
+                        kontainerPaket.classList.remove('pull-refresh');
+                        if (inputPencarian.value.trim() !== '') {
+                            inputPencarian.value = '';
+                            filterPaket('');
                         }
                     }, 1000);
                 }
@@ -1437,9 +1536,9 @@
                 passive: true
             });
 
-            // Initialize packages display
-            renderPackages();
-            updatePaginationDisplay();
+            // Inisialisasi tampilan paket
+            renderPaket();
+            perbaruiTampilanPaginasi();
         });
     </script>
 </body>

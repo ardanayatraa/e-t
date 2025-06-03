@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('jumlah_peserta')->unsigned();
             $table->decimal('owe_to_me', 15, 2)->nullable();
             $table->decimal('pay_to_provider', 15, 2)->nullable();
+            $table->decimal('additional_charge', 15, 2)->nullable();
             $table->decimal('total_transaksi', 15, 2);
             $table->string('transaksi_status', 100);
             $table->timestamps();

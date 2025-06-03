@@ -22,6 +22,7 @@ class Transaksi extends Model
         'jumlah_peserta',
         'owe_to_me',
         'pay_to_provider',
+        'additional_charge',
         'total_transaksi',
         'transaksi_status',
     ];
