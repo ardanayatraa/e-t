@@ -109,10 +109,7 @@
                 <td><strong>Balance:</strong></td>
                 <td>Rp {{ number_format($transaksi->balance, 0, ',', '.') }}</td>
             </tr>
-            <tr>
-                <td><strong>Pay to Provider:</strong></td>
-                <td>Rp {{ number_format($transaksi->pay_to_provider, 0, ',', '.') }}</td>
-            </tr>
+
             <tr>
                 <td><strong>Owe to Bali OM Tours:</strong></td>
                 <td>Rp {{ number_format($transaksi->owe_to_me, 0, ',', '.') }}</td>
@@ -131,20 +128,6 @@
                 <label>Tiket Masuk: {{ $include?->tiket_masuk ? '✓' : '✗' }}</label>
             </div>
         </fieldset>
-
-        <fieldset>
-            <legend>Exclude</legend>
-            @php $exclude = $transaksi->exclude; @endphp
-            <div class="checkbox-group">
-                <label>Bensin: {{ $exclude?->bensin ? '✓' : '✗' }}</label>
-                <label>Parkir: {{ $exclude?->parkir ? '✓' : '✗' }}</label>
-                <label>Supir: {{ $exclude?->sopir ? '✓' : '✗' }}</label>
-                <label>Makan Siang: {{ $exclude?->makan_siang ? '✓' : '✗' }}</label>
-                <label>Makan Malam: {{ $exclude?->makan_malam ? '✓' : '✗' }}</label>
-                <label>Tiket Masuk: {{ $exclude?->tiket_masuk ? '✓' : '✗' }}</label>
-            </div>
-        </fieldset>
-
         <div class="footer">
             Email ini dikirim secara otomatis dari sistem Bali Om Tour. Jangan balas email ini.
         </div>

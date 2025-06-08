@@ -161,7 +161,7 @@
             $totalRaw = $transaksi->total_transaksi ?? 0;
             $additional = $transaksi->additional_charge ?? 0;
             $deposit = $transaksi->deposit ?? 0;
-            $totalWithAdd = $totalRaw + $additional;
+            $totalWithAdd = $totalRaw;
             $balance = max($totalWithAdd - $deposit, 0);
         @endphp
 
@@ -295,36 +295,6 @@
             </div>
         </fieldset>
 
-        <fieldset>
-            <legend>Exclude</legend>
-            <div class="checkbox-grid">
-                @php $excludeData = $ketersediaan->exclude; @endphp
-                <label>
-                    <input type="checkbox" {{ $excludeData?->bensin ? 'checked' : '' }}>
-                    Bensin
-                </label>
-                <label>
-                    <input type="checkbox" {{ $excludeData?->parkir ? 'checked' : '' }}>
-                    Parkir
-                </label>
-                <label>
-                    <input type="checkbox" {{ $excludeData?->sopir ? 'checked' : '' }}>
-                    Supir
-                </label>
-                <label>
-                    <input type="checkbox" {{ $excludeData?->makan_siang ? 'checked' : '' }}>
-                    Makan Siang
-                </label>
-                <label>
-                    <input type="checkbox" {{ $excludeData?->makan_malam ? 'checked' : '' }}>
-                    Makan Malam
-                </label>
-                <label>
-                    <input type="checkbox" {{ $excludeData?->tiket_masuk ? 'checked' : '' }}>
-                    Tiket Masuk
-                </label>
-            </div>
-        </fieldset>
 
         <table style="width: 100%; margin-top: 50px; text-align: center;">
             <tr>
