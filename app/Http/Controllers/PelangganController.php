@@ -25,7 +25,7 @@ class PelangganController extends Controller
             'nama_pemesan'   => 'required|string|max:255',
             'alamat'         => 'required|string',
             'email'          => 'required|email|unique:pelanggans,email',
-            'nomor_whatsaap' => 'required|string',
+            'nomor_whatsapp' => 'required|string',
         ]);
         Pelanggan::create($data);
 
@@ -48,7 +48,7 @@ class PelangganController extends Controller
             'nama_pemesan'   => 'required|string|max:255',
             'alamat'         => 'required|string',
             'email'          => 'required|email|unique:pelanggans,email,'.$pelanggan->pelanggan_id.',pelanggan_id',
-            'nomor_whatsaap' => 'required|string',
+            'nomor_whatsapp' => 'required|string',
         ]);
         $pelanggan->update($data);
 

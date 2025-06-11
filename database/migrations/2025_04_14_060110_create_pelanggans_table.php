@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_pemesan', 255);
             $table->text('alamat');
             $table->string('email', 255)->unique();
-            $table->string('nomor_whatsaap', 50);
+            $table->string('nomor_whatsapp', 50);
             $table->timestamps();
         });
 

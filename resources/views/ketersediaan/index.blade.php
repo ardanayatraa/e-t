@@ -6,7 +6,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Manajemen Ketersediaan</h1>
                         <a href="{{ route('ketersediaan.create') }}"
-                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition">
+                            class="inline-flex items-center hidden px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition">
                             + Tambah Ketersediaan
                         </a>
                     </div>

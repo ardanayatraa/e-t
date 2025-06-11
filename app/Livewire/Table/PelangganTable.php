@@ -30,7 +30,7 @@ class PelangganTable extends DataTableComponent
             Column::make("Email", "email")
                 ->sortable(),
 
-            Column::make("Nomor WhatsApp", "nomor_whatsaap")
+            Column::make("Nomor WhatsApp", "nomor_whatsapp")
                 ->sortable(),
 
             Column::make('Actions')

@@ -87,7 +87,7 @@
                     <a href="{{ route('ketersediaan.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('ketersediaan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-clock w-6"></i>
-                        <span class="ml-2">Ketersediaan</span>
+                        <span class="ml-2">List Booking</span>
                     </a>
 
                     {{-- Include --}}
@@ -195,7 +195,7 @@
                     <a href="{{ route('ketersediaan.index') }}"
                         class="flex items-center px-4 py-3 {{ request()->routeIs('ketersediaan.*') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white transition' }}">
                         <i class="fas fa-clock w-6"></i>
-                        <span class="ml-2">Ketersediaan</span>
+                        <span class="ml-2">List Booking</span>
                     </a>
 
                     {{-- Include --}}

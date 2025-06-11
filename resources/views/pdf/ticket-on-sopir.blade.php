@@ -156,13 +156,15 @@
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-            // Ambil data transaksi dari ketersediaan
-            $transaksi = $ketersediaan->transaksi;
+            $k = $ketersediaan;
+            $transaksi = $k->transaksi;
             $totalRaw = $transaksi->total_transaksi ?? 0;
-            $additional = $transaksi->additional_charge ?? 0;
             $deposit = $transaksi->deposit ?? 0;
             $totalWithAdd = $totalRaw;
             $balance = max($totalWithAdd - $deposit, 0);
+
+            $sopir = $k->mobil->sopir;
+            $cust = $transaksi->pemesanan->pelanggan;
         @endphp
 
         <div class="header-center">
@@ -181,13 +183,13 @@
                 <td>
                     Name:
                     <span class="field w-350">
-                        {{ $transaksi->pemesanan->pelanggan->nama_pemesan ?? '-' }}
+                        {{ $sopir->nama_sopir ?? '-' }}
                     </span>
                 </td>
                 <td>
                     Phone No.:
                     <span class="field w-200">
-                        {{ $transaksi->pemesanan->pelanggan->nomor_whatsapp ?? '-' }}
+                        {{ $cust->nomor_whatsapp ?? '-' }}
                     </span>
                 </td>
             </tr>
@@ -201,8 +203,8 @@
                 <td>
                     Provider:
                     <span class="field w-300">
-                        {{ $transaksi->pemesanan->mobil->nama_kendaraan ?? '-' }} /
-                        {{ $transaksi->pemesanan->mobil->sopir->nama_sopir ?? '-' }}
+                        {{ $k->mobil->nama_kendaraan ?? '-' }} /
+                        {{ $sopir->nama_sopir ?? '-' }}
                     </span>
                 </td>
             </tr>
@@ -245,7 +247,7 @@
                 <td colspan="2">
                     Accommodation:
                     <span class="field w-150">
-                        {{ $transaksi->pemesanan->pelanggan->alamat ?? '-' }}
+                        {{ $cust->alamat ?? '-' }}
                     </span>
                 </td>
             </tr>
@@ -278,7 +280,7 @@
         <fieldset>
             <legend>Include</legend>
             <div class="checkbox-grid">
-                @php $includeData = $ketersediaan->include; @endphp
+                @php $includeData = $k->include; @endphp
                 <label>
                     <input type="checkbox" {{ $includeData?->bensin ? 'checked' : '' }}>
                     Bensin

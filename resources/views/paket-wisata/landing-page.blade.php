@@ -297,6 +297,52 @@
             font-size: 0.875rem;
             margin-top: 0.25rem;
         }
+
+        /* NEW: Multiple car selection styles */
+        .car-selected {
+            border-color: #0d9488 !important;
+            background-color: rgba(13, 148, 136, 0.1) !important;
+            position: relative;
+        }
+
+        .car-selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: #0d9488;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .car-counter {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        .multiple-booking-warning {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: 2px solid #d97706;
+        }
     </style>
     @livewireStyles
 </head>
@@ -528,15 +574,23 @@
         </div>
     </section>
 
-    <!-- MODIFIED: Booking Modal with Enhanced Features -->
+    <!-- MODIFIED: Enhanced Booking Modal with Multiple Car Selection -->
     <div id="kontainerPicker"
         class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-start justify-center p-0 z-50 backdrop-blur-sm overflow-y-auto">
         <div
-            class="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg md:max-w-4xl my-4 sm:my-8 mx-3 sm:mx-auto animate-fadeIn">
+            class="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg md:max-w-5xl my-4 sm:my-8 mx-3 sm:mx-auto animate-fadeIn">
             {{-- STEP 1 --}}
             <div id="step1" class="p-4 sm:p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg sm:text-2xl font-bold text-gray-800">1. Pilih Tanggal & Mobil</h4>
+                    <div class="flex items-center gap-3">
+                        <h4 class="text-lg sm:text-2xl font-bold text-gray-800">1. Pilih Tanggal & Mobil</h4>
+                        <!-- NEW: Selected cars counter -->
+                        <div id="selectedCarsCounter"
+                            class="hidden bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-car mr-1"></i>
+                            <span id="selectedCarsCount">0</span> mobil dipilih
+                        </div>
+                    </div>
                     <button onclick="tutupPicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
                         <i class="fas fa-times text-xl"></i>
                     </button>
@@ -551,6 +605,21 @@
                             Booking untuk besok hanya tersedia sampai jam 17:00. Setelah itu semua mobil tidak tersedia
                             karena kantor tutup jam 21:00.
                         </span>
+                    </div>
+                </div>
+
+                <!-- NEW: Multiple booking warning -->
+                <div id="peringatanMultipleBooking" class="hidden mb-4 p-4 multiple-booking-warning rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-orange-800 mr-3 text-xl"></i>
+                        <div>
+                            <h5 class="text-orange-900 font-bold text-sm mb-1">Pemesanan Multiple Mobil</h5>
+                            <p class="text-orange-800 text-sm">
+                                Anda akan memesan <strong id="jumlahMobilDipesan">0</strong> mobil sekaligus.
+                                Pastikan data yang Anda masukkan sudah benar karena setiap mobil akan memerlukan input
+                                data terpisah.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -585,6 +654,11 @@
                     <div class="w-full lg:w-1/2">
                         <div class="flex justify-between items-center mb-3">
                             <h5 class="font-medium text-gray-700 text-base sm:text-lg">Mobil Tersedia</h5>
+                            <!-- NEW: Clear selection button -->
+                            <button id="tombolResetPilihan" onclick="resetPilihanMobil()"
+                                class="hidden text-sm text-red-600 hover:text-red-800 font-medium">
+                                <i class="fas fa-undo mr-1"></i> Reset Pilihan
+                            </button>
                         </div>
 
                         <!-- MODIFIED: No vehicles available message -->
@@ -602,7 +676,7 @@
                                 <button type="button" data-tipe="{{ $m->nama_kendaraan }}"
                                     data-id="{{ $m->mobil_id }}" data-seats="{{ $m->jumlah_tempat_duduk }}"
                                     class="tombol-kendaraan flex flex-col items-center text-center bg-white p-3 rounded-xl shadow-md
-                                    border-2 border-transparent hover:border-teal-400 transition duration-200 hover:shadow-lg">
+                                    border-2 border-transparent hover:border-teal-400 transition duration-200 hover:shadow-lg relative">
                                     <div class="w-full h-24 sm:h-28 mb-2 sm:mb-3 overflow-hidden rounded-lg">
                                         <img src="{{ $m->foto ? asset('storage/' . $m->foto) : asset('images/default-car.jpg') }}"
                                             alt="{{ $m->nama_kendaraan }}" class="w-full h-full object-cover"
@@ -629,8 +703,8 @@
                 </div>
             </div>
 
-            {{-- STEP 2 --}}
-            <div id="step2" class="hidden p-4 sm:p-6 bg-gray-50">
+            {{-- STEP 2 - MODIFIED for Multiple Bookings --}}
+            <div id="step2" class="hidden p-4 sm:p-6 bg-gray-50 max-h-screen overflow-y-auto">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="text-lg sm:text-2xl font-bold text-gray-800">2. Lengkapi Data Pemesan</h4>
                     <button onclick="tutupPicker()" class="text-gray-500 hover:text-gray-700 p-2 touch-target">
@@ -670,15 +744,16 @@
                                     <span class="ml-2 sm:ml-3 font-medium">Jam Mulai:</span>
                                     <span id="previewWaktu" class="ml-auto font-medium text-gray-800"></span>
                                 </li>
-                                <li class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition">
-                                    <i class="fas fa-car-side text-teal-600 w-5 sm:w-6 text-center"></i>
+                                <li class="flex items-start p-2 hover:bg-gray-50 rounded-lg transition">
+                                    <i class="fas fa-car-side text-teal-600 w-5 sm:w-6 text-center mt-1"></i>
                                     <span class="ml-2 sm:ml-3 font-medium">Mobil:</span>
-                                    <span id="previewKendaraan"
-                                        class="ml-auto font-medium text-gray-800 text-right"></span>
+                                    <div id="previewKendaraan" class="ml-auto text-right">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
                                 </li>
                                 <li class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition">
                                     <i class="fas fa-tag text-teal-600 w-5 sm:w-6 text-center"></i>
-                                    <span class="ml-2 sm:ml-3 font-medium">Harga:</span>
+                                    <span class="ml-2 sm:ml-3 font-medium">Total Harga:</span>
                                     <span id="previewHarga" class="ml-auto font-semibold text-teal-600"></span>
                                 </li>
                             </ul>
@@ -687,15 +762,16 @@
                         {{-- Hidden fields --}}
                         <input type="hidden" name="paket_id" id="inputPaketId">
                         <input type="hidden" name="tanggal" id="inputTanggal">
-                        <input type="hidden" name="kendaraan" id="inputKendaraan">
-                        <input type="hidden" name="mobil_id" id="inputMobilId">
-                        <input type="hidden" name="harga" id="inputHarga">
-                        <input type="hidden" name="jumlah_peserta" id="inputPeserta">
                         <input type="hidden" name="jam_mulai" id="inputWaktu">
+                        <!-- NEW: Multiple car inputs -->
+                        <div id="hiddenMobilInputs">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
                     </div>
 
                     {{-- Form Data Pemesan --}}
                     <div class="w-full lg:w-1/2 space-y-4">
+                        <!-- Basic customer info -->
                         <div class="bg-white p-4 sm:p-5 rounded-xl shadow-lg space-y-3 sm:space-y-4">
                             <h5 class="text-base sm:text-lg font-semibold text-gray-700 mb-1 sm:mb-2">Detail Pemesan
                             </h5>
@@ -727,27 +803,11 @@
                                     focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm sm:text-base"
                                     placeholder="08xxxxxxxxxx" />
                             </label>
+                        </div>
 
-                            <!-- MODIFIED: Enhanced Participant Input with Validation -->
-                            <label class="block">
-                                <span class="text-gray-600 font-medium text-sm sm:text-base">Jumlah Peserta</span>
-                                <div class="relative">
-                                    <input id="inputJumlahPeserta" type="text" name="jumlah_peserta"
-                                        value="" inputmode="numeric" pattern="\d*"
-                                        oninput="validasiJumlahPeserta(this)" required
-                                        class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm
-                                        focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm sm:text-base"
-                                        placeholder="Masukkan jumlah peserta" />
-                                    <div id="infoPeserta"
-                                        class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
-                                        <span class="text-xs text-gray-500">Maks: <span
-                                                id="maksimalPeserta">0</span></span>
-                                    </div>
-                                </div>
-                                <div id="errorPeserta" class="hidden error-message">
-                                    Jumlah peserta tidak boleh melebihi kapasitas mobil
-                                </div>
-                            </label>
+                        <!-- NEW: Dynamic participant inputs for each car -->
+                        <div id="participantInputsContainer">
+                            <!-- Will be populated by JavaScript -->
                         </div>
 
                         {{-- Aksi --}}
@@ -767,7 +827,49 @@
         </div>
     </div>
 
-    <!-- NEW: Confirmation Modal -->
+    <!-- NEW: Multiple Booking Confirmation Modal -->
+    <div id="modalKonfirmasiMultiple"
+        class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 confirmation-modal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg modal-content">
+            <div class="p-6 text-center">
+                <!-- Warning Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-4">
+                    <i class="fas fa-exclamation-triangle text-orange-600 text-2xl"></i>
+                </div>
+
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Konfirmasi Multiple Booking</h3>
+
+                <!-- Message -->
+                <div class="text-gray-600 text-sm space-y-3 mb-6">
+                    <p class="font-medium">Apakah Anda yakin ingin memesan <strong
+                            id="konfirmasiJumlahMobil">0</strong> mobil sekaligus?</p>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left">
+                        <h4 class="font-semibold text-blue-800 text-sm mb-2">Yang akan Anda lakukan:</h4>
+                        <ul class="text-blue-700 text-xs space-y-1">
+                            <li>• Input data peserta untuk setiap mobil secara terpisah</li>
+                            <li>• Pembayaran dan e-ticket akan dibuat sesuai jumlah mobil</li>
+                            <li>• Setiap mobil akan memiliki booking terpisah</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-3">
+                    <button onclick="batalkanMultipleBooking()"
+                        class="flex-1 bg-gray-100 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-200 transition">
+                        Batal
+                    </button>
+                    <button onclick="lanjutkanMultipleBooking()"
+                        class="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-medium py-3 px-6 rounded-lg hover:shadow-lg transition">
+                        Ya, Lanjutkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODIFIED: Success Confirmation Modal -->
     <div id="modalKonfirmasi"
         class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 confirmation-modal">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md modal-content">
@@ -782,8 +884,9 @@
 
                 <!-- Message -->
                 <div class="text-gray-600 text-sm space-y-3 mb-6">
-                    <p class="font-medium">E-ticket akan didapatkan setelah melakukan pembayaran, segera melakukan
-                        pembayaran di kantor kami, sementara booking Anda akan kami hold selama 4 jam.</p>
+                    <p class="font-medium">
+                        <span id="pesanSukses">E-ticket akan didapatkan setelah melakukan pembayaran</span>
+                    </p>
                 </div>
 
                 <!-- Important Info -->
@@ -904,12 +1007,10 @@
                 paketNama: '',
                 harga: 0,
                 tanggal: '',
-                kendaraanNama: '',
-                kendaraanId: null,
-                fotoPath: '',
-                jumlah_peserta: '',
                 waktu: '',
-                maksKursi: 0 // Melacak maksimal kursi untuk kendaraan yang dipilih
+                fotoPath: '',
+                // NEW: Array untuk menyimpan multiple mobil
+                mobil: []
             };
 
             // Elemen UI
@@ -918,6 +1019,12 @@
             const tombolLanjutStep = document.getElementById('tombolLanjutStep');
             const daftarKendaraan = document.getElementById('daftarKendaraan');
             const peringatanWaktuBooking = document.getElementById('peringatanWaktuBooking');
+            const peringatanMultipleBooking = document.getElementById('peringatanMultipleBooking');
+            const selectedCarsCounter = document.getElementById('selectedCarsCounter');
+            const selectedCarsCount = document.getElementById('selectedCarsCount');
+            const jumlahMobilDipesan = document.getElementById('jumlahMobilDipesan');
+            const konfirmasiJumlahMobil = document.getElementById('konfirmasiJumlahMobil');
+            const tombolResetPilihan = document.getElementById('tombolResetPilihan');
 
             // DIPERBAIKI: Cek apakah booking diizinkan berdasarkan pembatasan waktu
             function apakahBookingDiizinkan(tanggalTerpilih) {
@@ -977,6 +1084,7 @@
             const picker = document.getElementById('kontainerPicker');
             const step1 = document.getElementById('step1');
             const step2 = document.getElementById('step2');
+            const modalKonfirmasiMultiple = document.getElementById('modalKonfirmasiMultiple');
 
             /**
              * DIPERBAIKI: Fungsi untuk memeriksa ketersediaan kendaraan berdasarkan tanggal
@@ -1055,24 +1163,63 @@
                 aktifkanTombolLanjutJikaSiap();
             }
 
-            function resetPilihanKendaraan() {
-                terpilih.kendaraanId = null;
-                terpilih.kendaraanNama = '';
-                terpilih.maksKursi = 0;
+            // NEW: Reset pilihan mobil
+            function resetPilihanMobil() {
+                terpilih.mobil = [];
 
                 document.querySelectorAll('.tombol-kendaraan').forEach(btn => {
-                    btn.classList.remove('border-teal-400');
+                    btn.classList.remove('car-selected');
+                    // Hapus counter jika ada
+                    const counter = btn.querySelector('.car-counter');
+                    if (counter) counter.remove();
+                });
+
+                perbaruiCounterMobil();
+                aktifkanTombolLanjutJikaSiap();
+                tombolResetPilihan.classList.add('hidden');
+            }
+
+            // NEW: Reset pilihan kendaraan
+            function resetPilihanKendaraan() {
+                resetPilihanMobil();
+
+                document.querySelectorAll('.tombol-kendaraan').forEach(btn => {
                     btn.style.display = 'flex';
                     btn.disabled = false;
                 });
 
                 pesanTidakAdaMobil.classList.add('hidden');
                 daftarKendaraan.classList.remove('hidden');
+                peringatanMultipleBooking.classList.add('hidden');
                 aktifkanTombolLanjutJikaSiap();
             }
 
+            // NEW: Update counter mobil yang dipilih
+            function perbaruiCounterMobil() {
+                const jumlahMobil = terpilih.mobil.length;
+
+                if (jumlahMobil > 0) {
+                    selectedCarsCount.textContent = jumlahMobil;
+                    selectedCarsCounter.classList.remove('hidden');
+
+                    // Tampilkan peringatan jika lebih dari 1 mobil
+                    if (jumlahMobil > 1) {
+                        peringatanMultipleBooking.classList.remove('hidden');
+                        jumlahMobilDipesan.textContent = jumlahMobil;
+                    } else {
+                        peringatanMultipleBooking.classList.add('hidden');
+                    }
+
+                    tombolResetPilihan.classList.remove('hidden');
+                } else {
+                    selectedCarsCounter.classList.add('hidden');
+                    peringatanMultipleBooking.classList.add('hidden');
+                    tombolResetPilihan.classList.add('hidden');
+                }
+            }
+
             function aktifkanTombolLanjutJikaSiap() {
-                if (terpilih.tanggal && terpilih.waktu && terpilih.kendaraanId) {
+                if (terpilih.tanggal && terpilih.waktu && terpilih.mobil.length > 0) {
                     tombolLanjutStep.disabled = false;
                     tombolLanjutStep.classList.remove('opacity-50', 'cursor-not-allowed');
                 } else {
@@ -1087,6 +1234,7 @@
                 terpilih.paketNama = nama;
                 terpilih.harga = hr;
                 terpilih.fotoPath = foto ? urlStorage + '/' + foto : '';
+                terpilih.mobil = []; // Reset mobil yang dipilih
 
                 resetPilihanKendaraan();
 
@@ -1109,56 +1257,187 @@
                 document.body.style.overflow = 'hidden';
             };
 
-            // Event listener untuk tombol kendaraan dengan pelacakan kursi yang ditingkatkan
+            // NEW: Event listener untuk tombol kendaraan dengan multiple selection
             document.querySelectorAll('.tombol-kendaraan').forEach(btn => {
                 btn.addEventListener('click', () => {
                     if (btn.style.display === 'none') return;
 
-                    terpilih.kendaraanId = btn.dataset.id;
-                    terpilih.kendaraanNama = btn.dataset.tipe;
-                    terpilih.maksKursi = parseInt(btn.dataset.seats);
+                    const mobilId = btn.dataset.id;
+                    const mobilNama = btn.dataset.tipe;
+                    const mobilKursi = parseInt(btn.dataset.seats);
 
-                    document.querySelectorAll('.tombol-kendaraan')
-                        .forEach(b => b.classList.remove('border-teal-400'));
-                    btn.classList.add('border-teal-400');
+                    // Cek apakah mobil sudah dipilih
+                    const indexMobil = terpilih.mobil.findIndex(m => m.id === mobilId);
 
+                    if (indexMobil >= 0) {
+                        // Hapus mobil dari pilihan
+                        terpilih.mobil.splice(indexMobil, 1);
+                        btn.classList.remove('car-selected');
+
+                        // Hapus counter jika ada
+                        const counter = btn.querySelector('.car-counter');
+                        if (counter) counter.remove();
+                    } else {
+                        // Tambahkan mobil ke pilihan
+                        terpilih.mobil.push({
+                            id: mobilId,
+                            nama: mobilNama,
+                            kursi: mobilKursi
+                        });
+
+                        btn.classList.add('car-selected');
+
+                        // Tambahkan counter jika lebih dari 1 mobil
+                        if (terpilih.mobil.length > 1) {
+                            // Hapus counter yang mungkin sudah ada
+                            const oldCounter = btn.querySelector('.car-counter');
+                            if (oldCounter) oldCounter.remove();
+
+                            // Buat counter baru
+                            const counter = document.createElement('span');
+                            counter.className = 'car-counter';
+                            counter.textContent = terpilih.mobil.length;
+                            btn.appendChild(counter);
+                        }
+                    }
+
+                    perbaruiCounterMobil();
                     aktifkanTombolLanjutJikaSiap();
                 });
             });
 
+            // NEW: Fungsi untuk menampilkan konfirmasi multiple booking
             window.keStep2 = function() {
                 if (!terpilih.tanggal) return alert('Pilih tanggal dahulu');
-                if (!terpilih.waktu) return alert('Pilih mobil dahulu');
-                if (!terpilih.kendaraanId) return alert('Pilih mobil dahulu');
+                if (!terpilih.waktu) return alert('Pilih jam mulai dahulu');
+                if (terpilih.mobil.length === 0) return alert('Pilih minimal 1 mobil dahulu');
 
+                // Jika lebih dari 1 mobil, tampilkan konfirmasi
+                if (terpilih.mobil.length > 1) {
+                    konfirmasiJumlahMobil.textContent = terpilih.mobil.length;
+                    modalKonfirmasiMultiple.classList.remove('hidden');
+                    return;
+                }
+
+                // Jika hanya 1 mobil, langsung ke step 2
+                lanjutkanKeStep2();
+            };
+
+            // NEW: Fungsi untuk membatalkan multiple booking
+            window.batalkanMultipleBooking = function() {
+                modalKonfirmasiMultiple.classList.add('hidden');
+            };
+
+            // NEW: Fungsi untuk melanjutkan multiple booking
+            window.lanjutkanMultipleBooking = function() {
+                modalKonfirmasiMultiple.classList.add('hidden');
+                lanjutkanKeStep2();
+            };
+
+            // NEW: Fungsi untuk lanjut ke step 2
+            function lanjutkanKeStep2() {
                 // Isi preview
                 document.getElementById('previewPaket').innerText = terpilih.paketNama;
                 document.getElementById('previewTanggal').innerText = formatTanggalTampilan(terpilih.tanggal);
                 document.getElementById('previewWaktu').innerText = terpilih.waktu;
-                document.getElementById('previewKendaraan').innerText = terpilih.kendaraanNama;
+
+                // Tampilkan daftar mobil yang dipilih
+                const previewKendaraan = document.getElementById('previewKendaraan');
+                previewKendaraan.innerHTML = '';
+
+                let totalHarga = 0;
+
+                // Buat hidden inputs untuk mobil yang dipilih
+                const hiddenMobilInputs = document.getElementById('hiddenMobilInputs');
+                hiddenMobilInputs.innerHTML = '';
+
+                // Buat container untuk input peserta
+                const participantInputsContainer = document.getElementById('participantInputsContainer');
+                participantInputsContainer.innerHTML = '';
+
+                // Isi input tersembunyi dasar
+                document.getElementById('inputPaketId').value = terpilih.paketId;
+                document.getElementById('inputTanggal').value = terpilih.tanggal;
+                document.getElementById('inputWaktu').value = terpilih.waktu;
+
+                // Loop untuk setiap mobil yang dipilih
+                terpilih.mobil.forEach((mobil, index) => {
+                    // Tambahkan ke preview
+                    const mobilItem = document.createElement('div');
+                    mobilItem.className = 'font-medium text-gray-800 mb-1';
+                    mobilItem.innerHTML =
+                        `${index + 1}. ${mobil.nama} <span class="text-xs text-gray-500">(${mobil.kursi} kursi)</span>`;
+                    previewKendaraan.appendChild(mobilItem);
+
+                    // Tambahkan hidden input untuk mobil
+                    const mobilIdInput = document.createElement('input');
+                    mobilIdInput.type = 'hidden';
+                    mobilIdInput.name = `mobil_ids[]`;
+                    mobilIdInput.value = mobil.id;
+                    hiddenMobilInputs.appendChild(mobilIdInput);
+
+                    // Buat input jumlah peserta untuk setiap mobil
+                    const participantCard = document.createElement('div');
+                    participantCard.className =
+                        'bg-white p-4 sm:p-5 rounded-xl shadow-lg space-y-3 sm:space-y-4';
+                    participantCard.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <h5 class="text-base sm:text-lg font-semibold text-gray-700">
+                                Mobil ${index + 1}: ${mobil.nama}
+                            </h5>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                Maks: ${mobil.kursi} kursi
+                            </span>
+                        </div>
+                        <label class="block">
+                            <span class="text-gray-600 font-medium text-sm sm:text-base">Jumlah Peserta</span>
+                            <div class="relative">
+                                <input
+                                    type="text"
+                                    name="jumlah_peserta[]"
+                                    value="1"
+                                    inputmode="numeric"
+                                    pattern="\\d*"
+                                    oninput="validasiJumlahPeserta(this, ${mobil.kursi}, ${index})"
+                                    required
+                                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm
+                                    focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm sm:text-base"
+                                    placeholder="Masukkan jumlah peserta"
+                                />
+                            </div>
+                            <div class="hidden error-message" id="errorPeserta-${index}">
+                                Jumlah peserta tidak boleh melebihi kapasitas mobil
+                            </div>
+                        </label>
+                    `;
+                    participantInputsContainer.appendChild(participantCard);
+
+                    // Tambahkan harga untuk setiap mobil (asumsi 1 peserta per mobil untuk awal)
+                    totalHarga += terpilih.harga;
+                });
+
+                // Update total harga
                 document.getElementById('previewHarga').innerText =
                     new Intl.NumberFormat('id-ID', {
                         style: 'currency',
                         currency: 'IDR',
                         minimumFractionDigits: 0
-                    }).format(terpilih.harga);
+                    }).format(totalHarga);
 
                 // Tampilkan foto
                 const fotoEl = document.getElementById('previewFoto');
                 fotoEl.src = terpilih.fotoPath || '/placeholder.svg';
                 document.getElementById('wrapperPreviewFoto').classList.remove('hidden');
 
-                // Isi input tersembunyi
-                document.getElementById('inputPaketId').value = terpilih.paketId;
-                document.getElementById('inputTanggal').value = terpilih.tanggal;
-                document.getElementById('inputKendaraan').value = terpilih.kendaraanNama;
-                document.getElementById('inputMobilId').value = terpilih.kendaraanId;
-                document.getElementById('inputHarga').value = terpilih.harga;
-                document.getElementById('inputPeserta').value = terpilih.jumlah_peserta;
-                document.getElementById('inputWaktu').value = terpilih.waktu;
-
-                // Perbarui input peserta dengan informasi batas kursi
-                perbaruiInputPeserta();
+                // Update pesan sukses untuk multiple booking
+                const pesanSukses = document.getElementById('pesanSukses');
+                if (terpilih.mobil.length > 1) {
+                    pesanSukses.textContent =
+                        `${terpilih.mobil.length} e-ticket akan didapatkan setelah melakukan pembayaran, segera melakukan pembayaran di kantor kami, sementara booking Anda akan kami hold selama 4 jam.`;
+                } else {
+                    pesanSukses.textContent =
+                        `E-ticket akan didapatkan setelah melakukan pembayaran, segera melakukan pembayaran di kantor kami, sementara booking Anda akan kami hold selama 4 jam.`;
+                }
 
                 if (window.innerWidth < 768) {
                     window.scrollTo(0, 0);
@@ -1166,34 +1445,21 @@
 
                 step1.classList.add('hidden');
                 step2.classList.remove('hidden');
-            };
-
-            // Perbarui input peserta dengan informasi batas kursi
-            function perbaruiInputPeserta() {
-                const infoPeserta = document.getElementById('infoPeserta');
-                const maksimalPeserta = document.getElementById('maksimalPeserta');
-
-                if (terpilih.maksKursi > 0) {
-                    maksimalPeserta.textContent = terpilih.maksKursi;
-                    infoPeserta.classList.remove('hidden');
-                } else {
-                    infoPeserta.classList.add('hidden');
-                }
             }
 
             // DIPERBAIKI: Validasi jumlah peserta dengan nama Indonesia
-            window.validasiJumlahPeserta = function(input) {
+            window.validasiJumlahPeserta = function(input, maksKursi, index) {
                 // Hapus karakter non-numerik
                 input.value = input.value.replace(/\D/g, '');
 
                 const jumlah = parseInt(input.value) || 0;
-                const divError = document.getElementById('errorPeserta');
+                const divError = document.getElementById(`errorPeserta-${index}`);
 
-                if (jumlah > terpilih.maksKursi && terpilih.maksKursi > 0) {
+                if (jumlah > maksKursi) {
                     input.classList.add('input-error');
                     divError.classList.remove('hidden');
                     divError.textContent =
-                        `Jumlah peserta tidak boleh melebihi ${terpilih.maksKursi} orang (kapasitas mobil)`;
+                        `Jumlah peserta tidak boleh melebihi ${maksKursi} orang (kapasitas mobil)`;
 
                     // Nonaktifkan tombol submit
                     document.getElementById('tombolKonfirmasiBooking').disabled = true;
@@ -1203,13 +1469,17 @@
                     input.classList.remove('input-error');
                     divError.classList.add('hidden');
 
-                    // Aktifkan tombol submit
-                    document.getElementById('tombolKonfirmasiBooking').disabled = false;
-                    document.getElementById('tombolKonfirmasiBooking').classList.remove('opacity-50',
-                        'cursor-not-allowed');
-                }
+                    // Cek semua input peserta
+                    const semuaValid = Array.from(document.querySelectorAll('input[name="jumlah_peserta[]"]'))
+                        .every(inp => !inp.classList.contains('input-error'));
 
-                terpilih.jumlah_peserta = input.value;
+                    if (semuaValid) {
+                        // Aktifkan tombol submit
+                        document.getElementById('tombolKonfirmasiBooking').disabled = false;
+                        document.getElementById('tombolKonfirmasiBooking').classList.remove('opacity-50',
+                            'cursor-not-allowed');
+                    }
+                }
             };
 
             function formatTanggalTampilan(strTanggal) {
@@ -1237,6 +1507,25 @@
 
             // Tampilkan modal konfirmasi setelah booking berhasil
             window.tampilkanModalKonfirmasi = function() {
+                // Validasi semua input peserta
+                const inputPeserta = document.querySelectorAll('input[name="jumlah_peserta[]"]');
+                let valid = true;
+
+                inputPeserta.forEach((input, index) => {
+                    const jumlah = parseInt(input.value) || 0;
+                    const maksKursi = terpilih.mobil[index].kursi;
+
+                    if (jumlah > maksKursi) {
+                        valid = false;
+                        input.classList.add('input-error');
+                        document.getElementById(`errorPeserta-${index}`).classList.remove('hidden');
+                    }
+                });
+
+                if (!valid) {
+                    return;
+                }
+
                 document.getElementById('modalKonfirmasi').classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             };
@@ -1260,21 +1549,12 @@
                 terpilih.paketNama = '';
                 terpilih.harga = 0;
                 terpilih.tanggal = '';
-                terpilih.kendaraanNama = '';
-                terpilih.kendaraanId = null;
-                terpilih.fotoPath = '';
-                terpilih.jumlah_peserta = '';
                 terpilih.waktu = '';
-                terpilih.maksKursi = 0;
+                terpilih.fotoPath = '';
+                terpilih.mobil = [];
 
                 // Reset input form
                 document.querySelector('form').reset();
-
-                // Reset validasi peserta
-                const inputPeserta = document.getElementById('inputJumlahPeserta');
-                const divError = document.getElementById('errorPeserta');
-                inputPeserta.classList.remove('input-error');
-                divError.classList.add('hidden');
 
                 // Reset pilihan kendaraan
                 resetPilihanKendaraan();
@@ -1282,13 +1562,6 @@
 
             // Konfirmasi dan submit form
             window.konfirmasiDanSubmit = function() {
-                // Validasi sekali lagi sebelum submit
-                const jumlahPeserta = parseInt(document.getElementById('inputJumlahPeserta').value) || 0;
-                if (jumlahPeserta > terpilih.maksKursi && terpilih.maksKursi > 0) {
-                    alert(`Jumlah peserta tidak boleh melebihi ${terpilih.maksKursi} orang`);
-                    return;
-                }
-
                 // Submit form
                 document.querySelector('form').submit();
             };

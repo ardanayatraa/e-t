@@ -58,11 +58,23 @@ class TransaksiLaporanTable extends DataTableComponent
 
             Column::make("Owe to Me", "owe_to_me")
                 ->sortable()
-                ->format(fn($v) => number_format($v, 0, ',', '.')),
+                ->format(function ($v, $row) {
+                    if ($row->owe_to_me > 0) {
+                        return 'Rp ' . number_format($row->owe_to_me, 0, ',', '.');
+                    } else {
+                        return '-';
+                    }
+                }),
 
             Column::make("Pay to Provider", "pay_to_provider")
                 ->sortable()
-                ->format(fn($v) => number_format($v, 0, ',', '.')),
+                ->format(function ($v, $row) {
+                    if ($row->pay_to_provider > 0) {
+                        return 'Rp ' . number_format($row->pay_to_provider, 0, ',', '.');
+                    } else {
+                        return '-';
+                    }
+                }),
 
             Column::make("Total Transaksi", "total_transaksi")
                 ->sortable()

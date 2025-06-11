@@ -47,7 +47,6 @@ class KetersediaanTable extends DataTableComponent
             Column::make('Actions')
                 ->label(fn($row) => view('components.table-action', [
                     'rowId'      => $row->terpesan_id,
-                    'editUrl'    => route('ketersediaan.edit', $row->terpesan_id),
                     'deleteUrl'  => route('ketersediaan.destroy', $row->terpesan_id),
                     'downloadId' => $row->terpesan_id,
                 ]))

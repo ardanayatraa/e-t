@@ -49,11 +49,11 @@
 
                         {{-- Nomor WhatsApp --}}
                         <div>
-                            <label for="nomor_whatsaap" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label for="nomor_whatsapp" class="block font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Nomor WhatsApp
                             </label>
-                            <input type="text" id="nomor_whatsaap" name="nomor_whatsaap"
-                                value="{{ old('nomor_whatsaap') }}" required placeholder="08xxxxxxxxxx"
+                            <input type="text" id="nomor_whatsapp" name="nomor_whatsapp"
+                                value="{{ old('nomor_whatsapp') }}" required placeholder="08xxxxxxxxxx"
                                 class="block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200
                                        focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 transition">
                         </div>

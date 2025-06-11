@@ -184,7 +184,7 @@
                 </td>
                 <td>Phone No.:
                     <span class="field w-200">
-                        {{ $transaksi->pemesanan->pelanggan->nomor_whatsaap ?? '-' }}
+                        {{ $transaksi->pemesanan->pelanggan->nomor_whatsapp ?? '-' }}
                     </span>
                 </td>
             </tr>
@@ -196,6 +196,7 @@
                 </td>
                 <td>Provider:
                     <span class="field w-300">
+                        {{ $transaksi->pemesanan->mobil->nama_kendaraan ?? '-' }} /
                         {{ $transaksi->pemesanan->mobil->sopir->nama_sopir ?? '-' }}
                     </span>
                 </td>
@@ -246,7 +247,16 @@
             </tr>
             <tr>
                 <td colspan="2">Other:
-                    <span class="field w-700"></span>
+                    <span class="field w-700">
+                        {{ $transaksi->paketWisata->tempat ?? '-' }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">Note:
+                    <span class="field w-700">
+                        {{ $transaksi->note ?? '-' }}
+                    </span>
                 </td>
             </tr>
         </table>

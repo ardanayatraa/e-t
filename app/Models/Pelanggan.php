@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pelanggan extends Model
 {
     protected $primaryKey = 'pelanggan_id';
-    protected $fillable = ['nama_pemesan', 'alamat', 'email', 'nomor_whatsaap'];
+    protected $fillable = ['nama_pemesan', 'alamat', 'email', 'nomor_whatsapp'];
 
     public function pemesanans()
     {
